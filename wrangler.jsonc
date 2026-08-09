@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "narix-academy",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2025-01-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Add a Cron Trigger in the Cloudflare dashboard (or here, under
+  // `triggers.crons`) to hit POST /api/cron/process-notification-jobs
+  // every 1-2 minutes with `Authorization: Bearer <CRON_SECRET>` — that
+  // drains the email outbox. Wrangler secrets: set with
+  // `wrangler secret put SUPABASE_SERVICE_ROLE_KEY` etc. — never commit them.
+}
