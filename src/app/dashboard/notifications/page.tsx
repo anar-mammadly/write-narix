@@ -16,7 +16,7 @@ export default async function NotificationsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <h1 className="font-heading text-2xl font-semibold text-foreground">{dict.dashboard.notifications.title}</h1>
         <MarkNotificationsRead ids={(notifications ?? []).filter((n) => !n.is_read).map((n) => n.id)} label={dict.dashboard.notifications.markAllRead} />
       </div>

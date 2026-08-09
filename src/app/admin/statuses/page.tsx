@@ -22,7 +22,7 @@ export default async function AdminStatusesPage() {
       <div className="mt-6 rounded-xl border border-border bg-card">
         <ul className="divide-y divide-border">
           {(statuses ?? []).map((s) => (
-            <li key={s.id} className="flex items-center justify-between px-5 py-3.5">
+            <li key={s.id} className="flex flex-wrap items-center justify-between gap-2 px-5 py-3.5">
               <span className="flex items-center gap-3">
                 <Badge style={{ backgroundColor: s.color, color: "white" }}>{s.name}</Badge>
                 {s.is_terminal && <span className="text-xs text-muted-foreground">{t.terminal}</span>}

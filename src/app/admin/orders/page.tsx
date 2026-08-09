@@ -25,7 +25,39 @@ export default async function AdminOrdersPage() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <h1 className="font-heading text-2xl font-semibold text-foreground">{t.title}</h1>
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card">
+      {(orders ?? []).length === 0 && (
+        <div className="mt-6 rounded-xl border border-border bg-card px-5 py-8 text-center text-muted-foreground">{t.empty}</div>
+      )}
+
+      {/* Mobile: stacked cards (< sm). Desktop: table (>= sm). */}
+      <div className="mt-6 grid gap-3 sm:hidden">
+        {(orders ?? []).map((order) => {
+          const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
+          const service = Array.isArray(order.services) ? order.services[0] : order.services;
+          const profile = Array.isArray(order.profiles) ? order.profiles[0] : order.profiles;
+          return (
+            <div key={order.id} className="rounded-xl border border-border bg-card p-4">
+              <div className="flex items-start justify-between gap-2">
+                <Link href={`/admin/orders/${order.order_number}`} className="font-medium text-primary hover:underline">
+                  {order.order_number}
+                </Link>
+                <OrderRowActions orderNumber={order.order_number} actionsLabel={t.actions} viewDetailsLabel={t.viewDetails} />
+              </div>
+              <p className="mt-1 truncate text-sm text-muted-foreground">{profile?.full_name ?? order.guest_name ?? order.guest_email ?? t.guest}</p>
+              <p className="truncate text-sm text-muted-foreground">{service?.name}</p>
+              <div className="mt-3 flex items-center justify-between">
+                <Badge style={{ backgroundColor: status?.color, color: "white" }}>{status?.name}</Badge>
+                <div className="text-right">
+                  <p className="tabular-nums font-medium">{Number(order.final_price).toFixed(2)} {dict.common.currency}</p>
+                  <p className="tabular-nums text-xs text-muted-foreground">{t.remaining}: {Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-6 hidden overflow-x-auto rounded-xl border border-border bg-card sm:block">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border text-left text-xs text-muted-foreground">
@@ -39,11 +71,6 @@ export default async function AdminOrdersPage() {
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {(orders ?? []).length === 0 && (
-              <tr>
-                <td colSpan={7} className="px-5 py-8 text-center text-muted-foreground">{t.empty}</td>
-              </tr>
-            )}
             {(orders ?? []).map((order) => {
               const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
               const service = Array.isArray(order.services) ? order.services[0] : order.services;

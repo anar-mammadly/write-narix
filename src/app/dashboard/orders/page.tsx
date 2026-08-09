@@ -17,46 +17,75 @@ export default async function OrdersListPage() {
     <div className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
       <h1 className="font-heading text-2xl font-semibold text-foreground">{dict.dashboard.orders.title}</h1>
 
-      <div className="mt-6 overflow-x-auto rounded-xl border border-border bg-card">
-        {orders && orders.length > 0 ? (
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border text-left text-xs text-muted-foreground">
-                <th className="px-5 py-3">{dict.dashboard.orders.order}</th>
-                <th className="px-5 py-3">{dict.dashboard.orders.service}</th>
-                <th className="px-5 py-3">{dict.dashboard.orders.status}</th>
-                <th className="px-5 py-3 text-right">{dict.dashboard.orders.total}</th>
-                <th className="px-5 py-3 text-right">{dict.dashboard.orders.remaining}</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-border">
-              {orders.map((order) => {
-                const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
-                const service = Array.isArray(order.services) ? order.services[0] : order.services;
-                return (
-                  <tr key={order.id} className="hover:bg-muted/40">
-                    <td className="px-5 py-3.5">
-                      <Link href={`/dashboard/orders/${order.order_number}`} className="font-medium text-primary hover:underline">
-                        {order.order_number}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-3.5 text-muted-foreground">{service?.name}</td>
-                    <td className="px-5 py-3.5">
-                      <Badge style={{ backgroundColor: status?.color, color: "white" }}>{status?.name}</Badge>
-                    </td>
-                    <td className="px-5 py-3.5 text-right font-medium tabular-nums">{Number(order.final_price).toFixed(2)} {dict.common.currency}</td>
-                    <td className="px-5 py-3.5 text-right tabular-nums text-muted-foreground">{Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
-        ) : (
+      {orders && orders.length > 0 ? (
+        <>
+          {/* Mobile: stacked cards (< sm). Desktop: table (>= sm). */}
+          <div className="mt-6 grid gap-3 sm:hidden">
+            {orders.map((order) => {
+              const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
+              const service = Array.isArray(order.services) ? order.services[0] : order.services;
+              return (
+                <Link
+                  key={order.id}
+                  href={`/dashboard/orders/${order.order_number}`}
+                  className="block rounded-xl border border-border bg-card p-4 hover:bg-muted/40"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="font-medium text-primary">{order.order_number}</span>
+                    <Badge style={{ backgroundColor: status?.color, color: "white" }}>{status?.name}</Badge>
+                  </div>
+                  <p className="mt-1 truncate text-sm text-muted-foreground">{service?.name}</p>
+                  <div className="mt-3 flex items-center justify-between text-sm">
+                    <span className="tabular-nums font-medium">{Number(order.final_price).toFixed(2)} {dict.common.currency}</span>
+                    <span className="tabular-nums text-muted-foreground">{dict.dashboard.orders.remaining}: {Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</span>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+
+          <div className="mt-6 hidden overflow-x-auto rounded-xl border border-border bg-card sm:block">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="border-b border-border text-left text-xs text-muted-foreground">
+                  <th className="px-5 py-3">{dict.dashboard.orders.order}</th>
+                  <th className="px-5 py-3">{dict.dashboard.orders.service}</th>
+                  <th className="px-5 py-3">{dict.dashboard.orders.status}</th>
+                  <th className="px-5 py-3 text-right">{dict.dashboard.orders.total}</th>
+                  <th className="px-5 py-3 text-right">{dict.dashboard.orders.remaining}</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {orders.map((order) => {
+                  const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
+                  const service = Array.isArray(order.services) ? order.services[0] : order.services;
+                  return (
+                    <tr key={order.id} className="hover:bg-muted/40">
+                      <td className="px-5 py-3.5">
+                        <Link href={`/dashboard/orders/${order.order_number}`} className="font-medium text-primary hover:underline">
+                          {order.order_number}
+                        </Link>
+                      </td>
+                      <td className="px-5 py-3.5 text-muted-foreground">{service?.name}</td>
+                      <td className="px-5 py-3.5">
+                        <Badge style={{ backgroundColor: status?.color, color: "white" }}>{status?.name}</Badge>
+                      </td>
+                      <td className="px-5 py-3.5 text-right font-medium tabular-nums">{Number(order.final_price).toFixed(2)} {dict.common.currency}</td>
+                      <td className="px-5 py-3.5 text-right tabular-nums text-muted-foreground">{Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </>
+      ) : (
+        <div className="mt-6 rounded-xl border border-border bg-card">
           <p className="px-5 py-10 text-center text-sm text-muted-foreground">
             {dict.dashboard.orders.empty} <Link href="/#calculator" className="text-primary hover:underline">{dict.dashboard.orders.placeFirst}</Link>.
           </p>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

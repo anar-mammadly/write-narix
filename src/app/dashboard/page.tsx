@@ -52,12 +52,12 @@ export default async function DashboardOverviewPage() {
               const service = Array.isArray(order.services) ? order.services[0] : order.services;
               return (
                 <li key={order.id}>
-                  <Link href={`/dashboard/orders/${order.order_number}`} className="flex items-center justify-between px-5 py-4 hover:bg-muted/40">
-                    <div>
-                      <p className="text-sm font-medium text-foreground">{order.order_number}</p>
-                      <p className="text-xs text-muted-foreground">{service?.name}</p>
+                  <Link href={`/dashboard/orders/${order.order_number}`} className="flex items-center justify-between gap-3 px-5 py-4 hover:bg-muted/40">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium text-foreground">{order.order_number}</p>
+                      <p className="truncate text-xs text-muted-foreground">{service?.name}</p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex shrink-0 items-center gap-3 sm:gap-4">
                       <Badge style={{ backgroundColor: status?.color, color: "white" }}>{status?.name}</Badge>
                       <span className="text-sm font-medium text-foreground">{Number(order.final_price).toFixed(2)} {dict.common.currency}</span>
                     </div>

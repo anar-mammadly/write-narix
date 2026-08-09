@@ -66,7 +66,7 @@ export default async function OrderConfirmationPage({
       <p className="mt-2 text-muted-foreground">{dict.orderConfirmation.orderNumber}</p>
       <p className="font-heading text-xl font-semibold text-foreground">{order.order_number}</p>
 
-      <div className="mt-6 grid grid-cols-3 gap-4 rounded-xl border border-border bg-card p-5 text-sm">
+      <div className="mt-6 grid grid-cols-3 gap-2 rounded-xl border border-border bg-card p-4 text-sm sm:gap-4 sm:p-5">
         <div>
           <p className="text-muted-foreground">{dict.orderConfirmation.status}</p>
           <p className="mt-1 font-medium text-foreground">{order.status?.name ?? "—"}</p>

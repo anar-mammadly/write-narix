@@ -29,7 +29,7 @@ export default async function AdminOverviewPage() {
       <h1 className="font-heading text-2xl font-semibold text-foreground">{t.title}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t.subtitle}</p>
 
-      <div className="mt-6 grid gap-4 sm:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
         <Stat label={t.totalOrders} value={String(totalOrders ?? 0)} />
         <Stat label={t.pendingReferrals} value={String(pendingReferrals ?? 0)} highlight={(pendingReferrals ?? 0) > 0} />
         <Stat label={t.pendingPayments} value={String(pendingPayments ?? 0)} />

@@ -32,7 +32,7 @@ export default async function TrackOrderPage({ params }: { params: Promise<{ tok
       <p className="text-sm text-muted-foreground">{dict.track.order}</p>
       <h1 className="font-heading text-2xl font-semibold text-foreground">{order.order_number}</h1>
 
-      <div className="mt-6 grid grid-cols-3 gap-4 rounded-xl border border-border bg-card p-5 text-sm">
+      <div className="mt-6 grid grid-cols-3 gap-2 rounded-xl border border-border bg-card p-4 text-sm sm:gap-4 sm:p-5">
         <div>
           <p className="text-muted-foreground">{dict.track.status}</p>
           <p className="mt-1 font-medium text-foreground">{order.status?.name}</p>

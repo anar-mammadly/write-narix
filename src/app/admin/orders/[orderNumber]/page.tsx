@@ -69,7 +69,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
         <Badge style={{ backgroundColor: status?.color, color: "white" }}>{status?.name}</Badge>
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-4 rounded-xl border border-border bg-card p-5 text-sm">
+      <div className="mt-6 grid grid-cols-3 gap-2 rounded-xl border border-border bg-card p-4 text-sm sm:gap-4 sm:p-5">
         <div><p className="text-muted-foreground">{t.total}</p><p className="mt-1 font-medium">{Number(order.final_price).toFixed(2)} {dict.common.currency}</p></div>
         <div><p className="text-muted-foreground">{t.paid}</p><p className="mt-1 font-medium">{Number(order.paid_amount).toFixed(2)} {dict.common.currency}</p></div>
         <div><p className="text-muted-foreground">{t.remaining}</p><p className="mt-1 font-medium">{Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</p></div>
@@ -91,7 +91,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
             <div><p className="text-muted-foreground">{t.topic}</p><p>{order.topic}</p></div>
             <div><p className="text-muted-foreground">{t.instructions}</p><p className="whitespace-pre-wrap">{order.description}</p></div>
             {(order.university || order.college) && (
-              <div className="flex gap-6">
+              <div className="flex flex-wrap gap-4 sm:gap-6">
                 {order.university && <div><p className="text-muted-foreground">{t.university}</p><p>{order.university}</p></div>}
                 {order.college && <div><p className="text-muted-foreground">{t.college}</p><p>{order.college}</p></div>}
               </div>
@@ -130,7 +130,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
             <p className="text-sm font-medium text-foreground">{t.paymentRequests}</p>
             <ul className="mt-2 divide-y divide-border rounded-lg border border-border">
               {(paymentRequests ?? []).map((pr) => (
-                <li key={pr.id} className="flex items-center justify-between px-4 py-3 text-sm">
+                <li key={pr.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
                   <span>{pr.description}</span>
                   <span className="flex items-center gap-2"><span>{Number(pr.amount).toFixed(2)} {dict.common.currency}</span><Badge variant={pr.status === "paid" ? "default" : "outline"}>{dict.statusLabels[pr.status]}</Badge></span>
                 </li>
@@ -142,7 +142,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
             <p className="text-sm font-medium text-foreground">{t.paymentHistory}</p>
             <ul className="mt-2 divide-y divide-border rounded-lg border border-border">
               {(payments ?? []).map((p) => (
-                <li key={p.id} className="flex items-center justify-between px-4 py-3 text-sm">
+                <li key={p.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
                   <span>{p.method} · {new Date(p.paid_at).toLocaleDateString()}</span>
                   <span className="font-medium">{Number(p.amount).toFixed(2)} {dict.common.currency}</span>
                 </li>
@@ -155,7 +155,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
         <TabsContent value="discounts" className="pt-4">
           <ul className="divide-y divide-border rounded-lg border border-border text-sm">
             {(discountApps ?? []).map((d, i) => (
-              <li key={i} className="flex items-center justify-between px-4 py-3">
+              <li key={i} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3">
                 <span>{dict.discountSources[d.discount_source]} — {d.percentage_considered}%</span>
                 <span className="flex items-center gap-2">
                   <span>{Number(d.amount_considered).toFixed(2)} {dict.common.currency}</span>

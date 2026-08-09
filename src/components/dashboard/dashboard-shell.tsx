@@ -62,7 +62,7 @@ export function DashboardShell({
           </Button>
         </form>
       </aside>
-      <div className="flex-1">
+      <div className="min-w-0 flex-1">
         <div className="flex items-center justify-between border-b border-border bg-card px-4 py-3 sm:hidden">
           <Link href="/" className="flex items-center gap-2">
             <span className="flex size-7 items-center justify-center rounded-md bg-navy text-navy-foreground font-heading text-xs">N</span>

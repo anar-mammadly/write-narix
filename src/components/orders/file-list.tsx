@@ -33,7 +33,7 @@ export function FileList({
   return (
     <ul className={cn("divide-y divide-border rounded-lg border border-border", className)}>
       {files.map((file) => (
-        <li key={file.id} className="flex items-center justify-between px-4 py-3 text-sm">
+        <li key={file.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
           <span className="flex items-center gap-2.5">
             <FileText className="size-4 text-muted-foreground" />
             <span>

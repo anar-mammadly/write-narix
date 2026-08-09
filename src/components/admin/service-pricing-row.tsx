@@ -71,7 +71,7 @@ export function ServicePricingRow({
 
   return (
     <li className="grid gap-3 px-4 py-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="text-sm font-medium text-foreground">{serviceName}</p>
         <Select items={{ progressive: "Progressive", per_page: "Per page" }} value={pricingType} onValueChange={(v) => v && setPricingType(v as "progressive" | "per_page")}>
           <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
