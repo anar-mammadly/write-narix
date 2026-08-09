@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import type { Database } from "@/lib/supabase/database.types";
+import { SUPABASE_URL, SUPABASE_ANON_KEY } from "@/lib/public-env";
 
 // Standard anon-key server client — runs with the current user's session and
 // is therefore fully subject to RLS. Use this everywhere except the one
@@ -8,10 +9,7 @@ import type { Database } from "@/lib/supabase/database.types";
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies();
 
-  return createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  return createServerClient<Database>(SUPABASE_URL, SUPABASE_ANON_KEY, {
       cookies: {
         getAll() {
           return cookieStore.getAll();

@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { redirect } from "next/navigation";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
+import { SITE_URL } from "@/lib/public-env";
 
 const signUpSchema = z.object({
   fullName: z.string().min(2, "Enter your full name"),
@@ -26,7 +27,7 @@ export async function signUpAction(
   }
 
   const supabase = await createServerSupabaseClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = SITE_URL;
 
   const { error } = await supabase.auth.signUp({
     email: parsed.data.email,
@@ -90,7 +91,7 @@ export async function requestPasswordResetAction(
   if (!parsed.success) return { error: "Enter a valid email address.", submitted: false };
 
   const supabase = await createServerSupabaseClient();
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const siteUrl = SITE_URL;
   await supabase.auth.resetPasswordForEmail(parsed.data, {
     redirectTo: `${siteUrl}/auth/callback?next=/reset-password`,
   });
