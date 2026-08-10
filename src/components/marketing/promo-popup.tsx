@@ -8,7 +8,6 @@ import {
   DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogFooter,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import type { PromoPopupConfig } from "@/lib/data/site-settings";
@@ -54,7 +53,7 @@ export function PromoPopup({ popup, closeLabel }: { popup: PromoPopupConfig; clo
 
   return (
     <Dialog open={open} onOpenChange={(next) => { if (!next) dismiss(); }}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="overflow-hidden sm:max-w-md">
         <DialogHeader className="items-center text-center">
           <span className="flex size-12 items-center justify-center rounded-full bg-accent text-primary">
             <Gift className="size-6" />
@@ -68,7 +67,11 @@ export function PromoPopup({ popup, closeLabel }: { popup: PromoPopupConfig; clo
             </DialogDescription>
           )}
         </DialogHeader>
-        <DialogFooter className="sm:justify-center">
+
+        {/* Explicit vertical stack — deliberately not DialogFooter's
+            flex-col-reverse (which, combined with a justify override, was
+            letting the two buttons render on top of each other on mobile). */}
+        <div className="-mx-4 -mb-4 flex flex-col gap-2 rounded-b-xl border-t border-border bg-muted/50 p-4">
           {popup.ctaText && (
             <Button
               size="lg"
@@ -81,10 +84,10 @@ export function PromoPopup({ popup, closeLabel }: { popup: PromoPopupConfig; clo
               {popup.ctaText}
             </Button>
           )}
-          <Button variant="ghost" className="w-full sm:w-auto" onClick={dismiss}>
+          <Button variant="ghost" className="w-full" onClick={dismiss}>
             {closeLabel}
           </Button>
-        </DialogFooter>
+        </div>
       </DialogContent>
     </Dialog>
   );
