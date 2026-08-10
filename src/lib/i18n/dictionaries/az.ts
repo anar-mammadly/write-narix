@@ -162,9 +162,15 @@ const az = {
       haveAccount: "Artıq hesabınız var?",
       signIn: "Daxil olun",
     },
-    checkEmail: {
-      title: "Emailinizi yoxlayın",
-      body: "Təsdiq linkini emailinizə göndərdik. Gələcək sifarişlərdə üzv endiriminizi aktivləşdirmək üçün ünvanınızı təsdiqləyin.",
+    verifyOtp: {
+      title: "Emailinizi təsdiqləyin",
+      subtitle: "{email} ünvanına 6 rəqəmli kod göndərdik. Qeydiyyatı tamamlamaq üçün kodu daxil edin.",
+      codeLabel: "Təsdiq kodu",
+      submit: "Təsdiqlə",
+      submitting: "Təsdiqlənir…",
+      resend: "Kodu yenidən göndər",
+      resending: "Göndərilir…",
+      resent: "Yeni kod göndərildi.",
     },
     forgotPassword: {
       title: "Şifrənizi yeniləyin",

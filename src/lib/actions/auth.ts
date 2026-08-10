@@ -39,7 +39,50 @@ export async function signUpAction(
   });
 
   if (error) return { error: error.message };
-  redirect("/signup/check-email");
+  redirect(`/signup/verify?email=${encodeURIComponent(parsed.data.email)}`);
+}
+
+const verifySignupOtpSchema = z.object({
+  email: z.string().email(),
+  token: z.string().min(6, "Enter the 6-digit code").max(6),
+});
+
+export async function verifySignupOtpAction(
+  _prev: AuthActionResult | null,
+  formData: FormData
+): Promise<AuthActionResult> {
+  const parsed = verifySignupOtpSchema.safeParse({
+    email: formData.get("email"),
+    token: formData.get("token"),
+  });
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? "Invalid input" };
+  }
+
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.auth.verifyOtp({
+    email: parsed.data.email,
+    token: parsed.data.token,
+    type: "signup",
+  });
+
+  if (error) return { error: "Incorrect or expired code." };
+  redirect("/?login=success");
+}
+
+export type ResendOtpResult = { error: string | null; sent: boolean };
+
+export async function resendSignupOtpAction(
+  _prev: ResendOtpResult,
+  formData: FormData
+): Promise<ResendOtpResult> {
+  const parsed = z.string().email().safeParse(formData.get("email"));
+  if (!parsed.success) return { error: "Enter a valid email address.", sent: false };
+
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.auth.resend({ type: "signup", email: parsed.data });
+  if (error) return { error: error.message, sent: false };
+  return { error: null, sent: true };
 }
 
 const signInSchema = z.object({

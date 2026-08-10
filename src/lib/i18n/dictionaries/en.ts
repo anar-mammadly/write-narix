@@ -164,9 +164,15 @@ const en = {
       haveAccount: "Already have an account?",
       signIn: "Sign in",
     },
-    checkEmail: {
-      title: "Check your email",
-      body: "We sent a confirmation link to your email. Verify your address to unlock your registered-member discount on future orders.",
+    verifyOtp: {
+      title: "Verify your email",
+      subtitle: "We sent a 6-digit code to {email}. Enter it below to finish creating your account.",
+      codeLabel: "Verification code",
+      submit: "Verify",
+      submitting: "Verifying…",
+      resend: "Resend code",
+      resending: "Sending…",
+      resent: "A new code has been sent.",
     },
     forgotPassword: {
       title: "Reset your password",
