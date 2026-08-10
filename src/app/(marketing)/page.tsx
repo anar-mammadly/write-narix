@@ -1,18 +1,24 @@
-import { ShieldCheck, GraduationCap, Clock3, Gift } from "lucide-react";
+import { ShieldCheck, GraduationCap, Clock3, Gift, Info } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getCalculatorConfig } from "@/lib/data/calculator-config";
-import { getSiteSettings } from "@/lib/data/site-settings";
+import { getSiteSettings, getPromoPopup } from "@/lib/data/site-settings";
 import { getDictionary, getLocale } from "@/lib/i18n/get-dictionary";
 import { Calculator } from "@/components/calculator/calculator";
 import { FaqSection } from "@/components/marketing/faq-section";
 import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { HowItWorks } from "@/components/marketing/how-it-works";
+import { PromoPopup } from "@/components/marketing/promo-popup";
 
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient();
   const { data: userData } = await supabase.auth.getUser();
   const locale = await getLocale();
-  const [config, settings, dict] = await Promise.all([getCalculatorConfig(locale), getSiteSettings(locale), getDictionary()]);
+  const [config, settings, dict, promoPopup] = await Promise.all([
+    getCalculatorConfig(locale),
+    getSiteSettings(locale),
+    getDictionary(),
+    getPromoPopup(locale),
+  ]);
 
   return (
     <>
@@ -47,11 +53,17 @@ export default async function HomePage() {
 
       <section id="calculator" className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
         <Calculator config={config} isAuthenticated={!!userData.user} dict={dict} />
+        <p className="mt-4 flex items-start gap-2 rounded-lg border border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
+          <Info className="mt-0.5 size-3.5 shrink-0" />
+          {dict.calculator.priceDisclaimer}
+        </p>
       </section>
 
       <HowItWorks dict={dict} />
       <FaqSection dict={dict} />
       <TestimonialsSection dict={dict} />
+
+      {promoPopup && <PromoPopup popup={promoPopup} closeLabel={dict.common.close} />}
     </>
   );
 }

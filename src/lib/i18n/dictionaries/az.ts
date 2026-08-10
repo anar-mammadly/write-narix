@@ -91,6 +91,7 @@ const az = {
     orderSummary: "Sifariş xülasəsi",
     placeOrder: "Sifariş et — {price} AZN",
     submitting: "Göndərilir…",
+    priceDisclaimer: "Diqqət: Yuxarıda göstərilən qiymət təxminidir. Son qiymət sifarişiniz və tələbləriniz komandamız tərəfindən yoxlanıldıqdan sonra təsdiqlənəcək.",
   },
   discountSources: {
     member: "Üzv endirimi",
@@ -385,6 +386,15 @@ const az = {
       bannerPlaceholderEn: "Early orders get 15% off",
       referralValidityTitle: "Referral mükafatının etibarlılığı",
       referralValidityDays: "gün, təsdiqdən sonra",
+      promoPopupTitle: "Təşviqat pop-up-ı (ilk giriş)",
+      promoPopupHeadingAz: "Başlıq (Azərbaycan dili)",
+      promoPopupHeadingEn: "Başlıq (İngilis dili)",
+      promoPopupBodyAz: "Mətn (Azərbaycan dili)",
+      promoPopupBodyEn: "Mətn (İngilis dili)",
+      promoPopupCtaAz: "Düymə mətni (Azərbaycan dili)",
+      promoPopupCtaEn: "Düymə mətni (İngilis dili)",
+      promoPopupStart: "Başlama tarixi (opsional)",
+      promoPopupEnd: "Bitmə tarixi (opsional)",
     },
   },
 } satisfies Record<string, unknown>;

@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
 
 export function WhatsAppSettingsForm({ number, display, dict }: { number: string; display: string; dict: Dictionary }) {
   const t = dict.admin.settings;
@@ -97,6 +98,126 @@ export function EarlyOrderBannerForm({
         <Label>{t.bannerTextEn}</Label>
         <Input value={bannerTextEn} onChange={(e) => setBannerTextEn(e.target.value)} placeholder={t.bannerPlaceholderEn} />
       </div>
+      {saved && <p className="text-xs text-success">{dict.common.saved}</p>}
+      <Button size="sm" className="w-fit" disabled={pending} onClick={save}>{dict.common.save}</Button>
+    </div>
+  );
+}
+
+export function PromoPopupForm({
+  enabled,
+  title,
+  titleEn,
+  description,
+  descriptionEn,
+  ctaText,
+  ctaTextEn,
+  startDate,
+  endDate,
+  dict,
+}: {
+  enabled: boolean;
+  title: string;
+  titleEn: string;
+  description: string;
+  descriptionEn: string;
+  ctaText: string;
+  ctaTextEn: string;
+  startDate: string;
+  endDate: string;
+  dict: Dictionary;
+}) {
+  const t = dict.admin.settings;
+  const [isEnabled, setIsEnabled] = useState(enabled);
+  const [titleAz, setTitleAz] = useState(title);
+  const [titleEnVal, setTitleEnVal] = useState(titleEn);
+  const [descAz, setDescAz] = useState(description);
+  const [descEn, setDescEn] = useState(descriptionEn);
+  const [ctaAz, setCtaAz] = useState(ctaText);
+  const [ctaEn, setCtaEn] = useState(ctaTextEn);
+  const [start, setStart] = useState(startDate.slice(0, 10));
+  const [end, setEnd] = useState(endDate.slice(0, 10));
+  const [pending, startTransition] = useTransition();
+  const [saved, setSaved] = useState(false);
+
+  function payload(overrides: Partial<{ enabled: boolean }> = {}) {
+    return {
+      enabled: overrides.enabled ?? isEnabled,
+      title: titleAz,
+      title_en: titleEnVal,
+      description: descAz,
+      description_en: descEn,
+      cta_text: ctaAz,
+      cta_text_en: ctaEn,
+      start_date: start || null,
+      end_date: end || null,
+    };
+  }
+
+  function save() {
+    startTransition(async () => {
+      const result = await updateSiteSettingAction("promo_popup", payload());
+      if (result.ok) { setSaved(true); setTimeout(() => setSaved(false), 1200); }
+    });
+  }
+
+  return (
+    <div className="grid gap-3 rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-foreground">{t.promoPopupTitle}</p>
+        <Switch
+          checked={isEnabled}
+          onCheckedChange={(v) => {
+            setIsEnabled(v);
+            startTransition(() => { updateSiteSettingAction("promo_popup", payload({ enabled: v })); });
+          }}
+        />
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupHeadingAz}</Label>
+          <Input value={titleAz} onChange={(e) => setTitleAz(e.target.value)} />
+        </div>
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupHeadingEn}</Label>
+          <Input value={titleEnVal} onChange={(e) => setTitleEnVal(e.target.value)} />
+        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupBodyAz}</Label>
+          <Textarea value={descAz} onChange={(e) => setDescAz(e.target.value)} rows={3} />
+        </div>
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupBodyEn}</Label>
+          <Textarea value={descEn} onChange={(e) => setDescEn(e.target.value)} rows={3} />
+        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupCtaAz}</Label>
+          <Input value={ctaAz} onChange={(e) => setCtaAz(e.target.value)} />
+        </div>
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupCtaEn}</Label>
+          <Input value={ctaEn} onChange={(e) => setCtaEn(e.target.value)} />
+        </div>
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupStart}</Label>
+          <Input type="date" value={start} onChange={(e) => setStart(e.target.value)} />
+        </div>
+        <div className="grid gap-1.5">
+          <Label>{t.promoPopupEnd}</Label>
+          <Input type="date" value={end} onChange={(e) => setEnd(e.target.value)} />
+        </div>
+      </div>
+
       {saved && <p className="text-xs text-success">{dict.common.saved}</p>}
       <Button size="sm" className="w-fit" disabled={pending} onClick={save}>{dict.common.save}</Button>
     </div>

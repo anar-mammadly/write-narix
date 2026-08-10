@@ -93,6 +93,7 @@ const en = {
     orderSummary: "Order summary",
     placeOrder: "Place order — {price} AZN",
     submitting: "Submitting…",
+    priceDisclaimer: "Please note: The price shown above is an estimated price. The final price will be confirmed after your order and requirements have been reviewed by our team.",
   },
   discountSources: {
     member: "Member discount",
@@ -387,6 +388,15 @@ const en = {
       bannerPlaceholderEn: "Early orders get 15% off",
       referralValidityTitle: "Referral benefit validity",
       referralValidityDays: "days after approval",
+      promoPopupTitle: "First-visit promo popup",
+      promoPopupHeadingAz: "Heading (Azerbaijani)",
+      promoPopupHeadingEn: "Heading (English)",
+      promoPopupBodyAz: "Text (Azerbaijani)",
+      promoPopupBodyEn: "Text (English)",
+      promoPopupCtaAz: "Button text (Azerbaijani)",
+      promoPopupCtaEn: "Button text (English)",
+      promoPopupStart: "Start date (optional)",
+      promoPopupEnd: "End date (optional)",
     },
   },
 } satisfies Dictionary;

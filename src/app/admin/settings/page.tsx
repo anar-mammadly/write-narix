@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { WhatsAppSettingsForm, EarlyOrderBannerForm, ReferralValidityForm } from "@/components/admin/settings-form";
+import { WhatsAppSettingsForm, EarlyOrderBannerForm, ReferralValidityForm, PromoPopupForm } from "@/components/admin/settings-form";
 import type { Json } from "@/lib/supabase/database.types";
 
 export default async function AdminSettingsPage() {
@@ -14,6 +14,20 @@ export default async function AdminSettingsPage() {
   const whatsapp = (map.get("whatsapp") as { number?: string; display?: string } | undefined) ?? {};
   const banner = (map.get("early_order_banner") as { enabled?: boolean; text?: string; text_en?: string } | undefined) ?? {};
   const referral = (map.get("referral_program") as { validity_days?: number } | undefined) ?? {};
+  const promoPopup =
+    (map.get("promo_popup") as
+      | {
+          enabled?: boolean;
+          title?: string;
+          title_en?: string;
+          description?: string;
+          description_en?: string;
+          cta_text?: string;
+          cta_text_en?: string;
+          start_date?: string | null;
+          end_date?: string | null;
+        }
+      | undefined) ?? {};
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
@@ -25,6 +39,18 @@ export default async function AdminSettingsPage() {
           enabled={banner.enabled ?? false}
           text={banner.text ?? ""}
           textEn={banner.text_en ?? ""}
+          dict={dict}
+        />
+        <PromoPopupForm
+          enabled={promoPopup.enabled ?? false}
+          title={promoPopup.title ?? ""}
+          titleEn={promoPopup.title_en ?? ""}
+          description={promoPopup.description ?? ""}
+          descriptionEn={promoPopup.description_en ?? ""}
+          ctaText={promoPopup.cta_text ?? ""}
+          ctaTextEn={promoPopup.cta_text_en ?? ""}
+          startDate={promoPopup.start_date ?? ""}
+          endDate={promoPopup.end_date ?? ""}
           dict={dict}
         />
         <ReferralValidityForm validityDays={referral.validity_days ?? 90} dict={dict} />
