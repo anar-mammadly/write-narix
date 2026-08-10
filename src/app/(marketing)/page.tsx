@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { ShieldCheck, GraduationCap, Clock3, Gift, Info } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getCalculatorConfig } from "@/lib/data/calculator-config";
@@ -8,6 +9,7 @@ import { FaqSection } from "@/components/marketing/faq-section";
 import { TestimonialsSection } from "@/components/marketing/testimonials-section";
 import { HowItWorks } from "@/components/marketing/how-it-works";
 import { PromoPopup } from "@/components/marketing/promo-popup";
+import { LoginSuccessToast } from "@/components/marketing/login-success-toast";
 
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient();
@@ -64,6 +66,10 @@ export default async function HomePage() {
       <TestimonialsSection dict={dict} />
 
       {promoPopup && <PromoPopup popup={promoPopup} closeLabel={dict.common.close} />}
+
+      <Suspense fallback={null}>
+        <LoginSuccessToast message={dict.auth.loginSuccessToast} />
+      </Suspense>
     </>
   );
 }

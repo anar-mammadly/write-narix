@@ -14,7 +14,7 @@ export function GoogleSignInButton({ next, label = "Continue with Google" }: { n
     await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(next || "/dashboard")}`,
+        redirectTo: `${siteUrl}/auth/callback?next=${encodeURIComponent(next || "/?login=success")}`,
       },
     });
   }

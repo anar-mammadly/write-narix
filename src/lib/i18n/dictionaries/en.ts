@@ -129,6 +129,7 @@ const en = {
     referralCode: "Referral code (optional)",
   },
   auth: {
+    loginSuccessToast: "Login successful!",
     login: {
       title: "Welcome back",
       subtitle: "Sign in to track your orders and messages.",

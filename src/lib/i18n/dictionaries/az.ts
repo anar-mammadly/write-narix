@@ -127,6 +127,7 @@ const az = {
     referralCode: "Referral kod (istəyə bağlı)",
   },
   auth: {
+    loginSuccessToast: "Giriş uğurlu oldu!",
     login: {
       title: "Xoş gəlmisiniz",
       subtitle: "Sifarişlərinizi və mesajlarınızı izləmək üçün daxil olun.",

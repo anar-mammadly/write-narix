@@ -70,7 +70,7 @@ export async function signInAction(
     .single();
 
   const next = (formData.get("next") as string) || null;
-  redirect(next || (profile?.role === "admin" ? "/admin" : "/dashboard"));
+  redirect(next || (profile?.role === "admin" ? "/admin" : "/?login=success"));
 }
 
 export async function signOutAction() {
