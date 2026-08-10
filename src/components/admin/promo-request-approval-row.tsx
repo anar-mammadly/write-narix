@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { approvePromoRequestAction, rejectPromoRequestAction } from "@/lib/actions/admin-referrals";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 import { formatMessage } from "@/lib/i18n/format";
@@ -21,6 +22,7 @@ export function PromoRequestApprovalRow({
   dict: Dictionary;
 }) {
   const t = dict.admin.referrals;
+  const router = useRouter();
   const [pct, setPct] = useState("10");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -58,7 +60,10 @@ export function PromoRequestApprovalRow({
             startTransition(async () => {
               const result = await approvePromoRequestAction(id, Number(pct));
               if (!result.ok) setError(result.error ?? "Failed");
-              else setDone(true);
+              else {
+                setDone(true);
+                router.refresh();
+              }
             })
           }
         >
@@ -72,7 +77,10 @@ export function PromoRequestApprovalRow({
             startTransition(async () => {
               const result = await rejectPromoRequestAction(id, "Not eligible");
               if (!result.ok) setError(result.error ?? "Failed");
-              else setDone(true);
+              else {
+                setDone(true);
+                router.refresh();
+              }
             })
           }
         >

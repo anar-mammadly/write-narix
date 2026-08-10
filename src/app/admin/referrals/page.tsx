@@ -19,7 +19,7 @@ export default async function AdminReferralsPage() {
     supabase
       .from("promo_code_requests")
       .select(
-        "id, created_at, promo_codes(code), orders(order_number, guest_name, guest_email), profiles(full_name)"
+        "id, created_at, promo_codes(code), orders(order_number, guest_name, guest_email), profiles!promo_code_requests_user_id_fkey(full_name)"
       )
       .eq("status", "pending_approval")
       .order("created_at", { ascending: false }),

@@ -7,6 +7,9 @@ import { OrderTimeline } from "@/components/orders/order-timeline";
 import { FileUpload } from "@/components/orders/file-upload";
 import { FileList } from "@/components/orders/file-list";
 import { MessageThread } from "@/components/orders/message-thread";
+import { formatMessage } from "@/lib/i18n/format";
+import { ReferralApprovalRow } from "@/components/admin/referral-approval-row";
+import { PromoRequestApprovalRow } from "@/components/admin/promo-request-approval-row";
 import {
   StatusChangeForm,
   PaymentRequestForm,
@@ -23,34 +26,69 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
   const { data: order } = await supabase
     .from("orders")
     .select(
-      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, paid_amount, remaining_amount, locked, status_id, guest_name, guest_email, created_at, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label), profiles!orders_user_id_fkey(full_name)"
+      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, paid_amount, remaining_amount, locked, status_id, guest_name, guest_email, created_at, word_count, page_count, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label), languages(name), citation_styles(name), profiles!orders_user_id_fkey(full_name)"
     )
     .eq("order_number", orderNumber)
     .single();
 
   if (!order) notFound();
 
-  const [{ data: statuses }, { data: history }, { data: files }, { data: messages }, { data: paymentRequests }, { data: payments }, { data: discountApps }, { data: referral }] =
-    await Promise.all([
-      supabase.from("order_statuses").select("id, name").eq("is_active", true).order("display_order"),
-      supabase
-        .from("order_status_history")
-        .select("note, created_at, order_statuses!order_status_history_to_status_id_fkey(name, color)")
-        .eq("order_id", order.id)
-        .order("created_at"),
-      supabase.from("files").select("id, file_name, category, storage_path, size_bytes, created_at").eq("order_id", order.id).order("created_at", { ascending: false }),
-      supabase.from("messages").select("id, body, sender_is_admin, created_at").eq("order_id", order.id).order("created_at"),
-      supabase.from("payment_requests").select("id, amount, description, status").eq("order_id", order.id).order("created_at", { ascending: false }),
-      supabase.from("payments").select("id, amount, method, paid_at").eq("order_id", order.id).order("paid_at", { ascending: false }),
-      supabase.from("discount_applications").select("discount_source, percentage_considered, amount_considered, applied, reason").eq("order_id", order.id),
-      supabase.from("referrals").select("id, status, referrer_user_id, referred_user_id").eq("order_id", order.id).maybeSingle(),
-    ]);
+  const [
+    { data: statuses },
+    { data: history },
+    { data: files },
+    { data: messages },
+    { data: paymentRequests },
+    { data: payments },
+    { data: discountApps },
+    { data: referral },
+    { data: promoRequest },
+    { data: selectedAddons },
+    { data: allAddons },
+  ] = await Promise.all([
+    supabase.from("order_statuses").select("id, name").eq("is_active", true).order("display_order"),
+    supabase
+      .from("order_status_history")
+      .select("note, created_at, order_statuses!order_status_history_to_status_id_fkey(name, color)")
+      .eq("order_id", order.id)
+      .order("created_at"),
+    supabase.from("files").select("id, file_name, category, storage_path, size_bytes, created_at").eq("order_id", order.id).order("created_at", { ascending: false }),
+    supabase.from("messages").select("id, body, sender_is_admin, created_at").eq("order_id", order.id).order("created_at"),
+    supabase.from("payment_requests").select("id, amount, description, status").eq("order_id", order.id).order("created_at", { ascending: false }),
+    supabase.from("payments").select("id, amount, method, paid_at").eq("order_id", order.id).order("paid_at", { ascending: false }),
+    supabase.from("discount_applications").select("discount_source, percentage_considered, amount_considered, applied, reason").eq("order_id", order.id),
+    supabase
+      .from("referrals")
+      .select(
+        "id, status, referral_codes(code), referrer:profiles!referrals_referrer_user_id_fkey(full_name), referred:profiles!referrals_referred_user_id_fkey(full_name)"
+      )
+      .eq("order_id", order.id)
+      .maybeSingle(),
+    supabase
+      .from("promo_code_requests")
+      .select("id, status, promo_codes(code), profiles!promo_code_requests_user_id_fkey(full_name)")
+      .eq("order_id", order.id)
+      .maybeSingle(),
+    supabase.from("order_additional_services").select("additional_service_id").eq("order_id", order.id),
+    supabase.from("additional_services").select("id, name, is_plagiarism_addon").eq("is_active", true).order("name"),
+  ]);
 
   const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
   const service = Array.isArray(order.services) ? order.services[0] : order.services;
   const level = Array.isArray(order.academic_levels) ? order.academic_levels[0] : order.academic_levels;
   const deadline = Array.isArray(order.deadline_options) ? order.deadline_options[0] : order.deadline_options;
+  const language = Array.isArray(order.languages) ? order.languages[0] : order.languages;
+  const citationStyle = Array.isArray(order.citation_styles) ? order.citation_styles[0] : order.citation_styles;
   const client = Array.isArray(order.profiles) ? order.profiles[0] : order.profiles;
+
+  const selectedAddonIds = new Set((selectedAddons ?? []).map((a) => a.additional_service_id));
+
+  const referralCode = referral ? (Array.isArray(referral.referral_codes) ? referral.referral_codes[0] : referral.referral_codes) : null;
+  const referrer = referral ? (Array.isArray(referral.referrer) ? referral.referrer[0] : referral.referrer) : null;
+  const referred = referral ? (Array.isArray(referral.referred) ? referral.referred[0] : referral.referred) : null;
+
+  const promoCode = promoRequest ? (Array.isArray(promoRequest.promo_codes) ? promoRequest.promo_codes[0] : promoRequest.promo_codes) : null;
+  const promoProfile = promoRequest ? (Array.isArray(promoRequest.profiles) ? promoRequest.profiles[0] : promoRequest.profiles) : null;
 
   const timeline = (history ?? []).map((h) => {
     const s = Array.isArray(h.order_statuses) ? h.order_statuses[0] : h.order_statuses;
@@ -96,13 +134,75 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
                 {order.college && <div><p className="text-muted-foreground">{t.college}</p><p>{order.college}</p></div>}
               </div>
             )}
-            {referral && (
-              <div>
-                <p className="text-muted-foreground">{t.referral}</p>
-                <p>{dict.statusLabels[referral.status]}</p>
-              </div>
-            )}
           </div>
+
+          <div className="rounded-xl border border-border bg-card p-4">
+            <p className="text-sm font-medium text-foreground">{t.selectionsTitle}</p>
+            <div className="mt-3 grid grid-cols-2 gap-3 text-sm sm:grid-cols-4">
+              {order.page_count != null && (
+                <div><p className="text-muted-foreground">{t.pageCount}</p><p>{order.page_count}</p></div>
+              )}
+              {order.word_count != null && (
+                <div><p className="text-muted-foreground">{t.wordCount}</p><p>{order.word_count}</p></div>
+              )}
+              <div><p className="text-muted-foreground">{t.language}</p><p>{language?.name ?? "—"}</p></div>
+              <div><p className="text-muted-foreground">{t.citationStyle}</p><p>{citationStyle?.name ?? "—"}</p></div>
+            </div>
+            <p className="mt-4 text-sm font-medium text-foreground">{t.additionalServicesTitle}</p>
+            <ul className="mt-2 grid gap-1.5 text-sm sm:grid-cols-2">
+              {(allAddons ?? []).map((addon) => {
+                const isSelected = selectedAddonIds.has(addon.id);
+                return (
+                  <li key={addon.id} className="flex items-center justify-between gap-2 rounded-lg border border-border px-3 py-2">
+                    <span className={isSelected ? "text-foreground" : "text-muted-foreground"}>{addon.name}</span>
+                    <Badge variant={isSelected ? "default" : "outline"}>{isSelected ? t.selected : t.notSelected}</Badge>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+
+          {(referral || promoRequest) && (
+            <div className="rounded-xl border border-border bg-card">
+              <div className="border-b border-border px-4 py-3">
+                <p className="text-sm font-medium text-foreground">{t.discountRequestsTitle}</p>
+              </div>
+              <ul className="divide-y divide-border">
+                {referral && referral.status === "pending_approval" && (
+                  <ReferralApprovalRow
+                    id={referral.id}
+                    code={referralCode?.code ?? ""}
+                    referrerName={referrer?.full_name ?? "—"}
+                    referredName={referred?.full_name ?? "—"}
+                    orderNumber={order.order_number}
+                    dict={dict}
+                  />
+                )}
+                {referral && referral.status !== "pending_approval" && (
+                  <li className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
+                    <span>{formatMessage(dict.admin.referrals.referredBy, { code: referralCode?.code ?? "", order: order.order_number })}</span>
+                    <Badge variant={referral.status === "approved" ? "default" : "outline"}>{dict.statusLabels[referral.status]}</Badge>
+                  </li>
+                )}
+                {promoRequest && promoRequest.status === "pending_approval" && (
+                  <PromoRequestApprovalRow
+                    id={promoRequest.id}
+                    code={promoCode?.code ?? ""}
+                    customerName={promoProfile?.full_name ?? order.guest_name ?? order.guest_email ?? dict.admin.referrals.guestCustomer}
+                    orderNumber={order.order_number}
+                    dict={dict}
+                  />
+                )}
+                {promoRequest && promoRequest.status !== "pending_approval" && (
+                  <li className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm">
+                    <span>{formatMessage(dict.admin.referrals.promoUsedBy, { code: promoCode?.code ?? "", order: order.order_number })}</span>
+                    <Badge variant={promoRequest.status === "approved" ? "default" : "outline"}>{dict.statusLabels[promoRequest.status]}</Badge>
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
+
           <StatusChangeForm orderId={order.id} orderNumber={order.order_number} currentStatusId={order.status_id} locked={order.locked} statuses={statuses ?? []} dict={dict} />
           <OrderRequestForm orderId={order.id} orderNumber={order.order_number} dict={dict} />
         </TabsContent>

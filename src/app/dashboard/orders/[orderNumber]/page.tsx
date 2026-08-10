@@ -16,14 +16,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
   const { data: order } = await supabase
     .from("orders")
     .select(
-      "id, order_number, subject, topic, description, university, college, final_price, paid_amount, remaining_amount, is_fully_paid, created_at, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label)"
+      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, paid_amount, remaining_amount, is_fully_paid, created_at, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label)"
     )
     .eq("order_number", orderNumber)
     .single();
 
   if (!order) notFound();
 
-  const [{ data: history }, { data: files }, { data: messages }, { data: paymentRequests }, { data: payments }] =
+  const [{ data: history }, { data: files }, { data: messages }, { data: paymentRequests }, { data: payments }, { data: referral }, { data: promoRequest }] =
     await Promise.all([
       supabase
         .from("order_status_history")
@@ -34,6 +34,8 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
       supabase.from("messages").select("id, body, sender_is_admin, created_at").eq("order_id", order.id).order("created_at"),
       supabase.from("payment_requests").select("id, amount, description, status, due_date").eq("order_id", order.id).order("created_at", { ascending: false }),
       supabase.from("payments").select("id, amount, method, paid_at").eq("order_id", order.id).order("paid_at", { ascending: false }),
+      supabase.from("referrals").select("status").eq("order_id", order.id).maybeSingle(),
+      supabase.from("promo_code_requests").select("status").eq("order_id", order.id).maybeSingle(),
     ]);
 
   const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
@@ -63,6 +65,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
         <div><p className="text-muted-foreground">{t.paid}</p><p className="mt-1 font-medium">{Number(order.paid_amount).toFixed(2)} {dict.common.currency}</p></div>
         <div><p className="text-muted-foreground">{t.remaining}</p><p className="mt-1 font-medium">{Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</p></div>
       </div>
+
+      {order.discount_source && Number(order.discount_amount) > 0 && (
+        <p className="mt-3 text-sm text-success">
+          {dict.discountSources[order.discount_source]} {Number(order.discount_percentage)}% (-{Number(order.discount_amount).toFixed(2)} {dict.common.currency})
+        </p>
+      )}
+      {(referral?.status === "pending_approval" || promoRequest?.status === "pending_approval") && (
+        <p className="mt-3 text-sm text-muted-foreground">{dict.calculator.discountCodeStatus.pending_approval}</p>
+      )}
 
       <Tabs defaultValue="overview" className="mt-8">
         <TabsList>

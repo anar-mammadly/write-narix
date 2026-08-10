@@ -11,6 +11,7 @@ export async function approveReferralAction(referralId: string, percentage: numb
   });
   if (error) return { ok: false, error: "Could not approve referral." };
   revalidatePath("/admin/referrals");
+  revalidatePath("/admin/orders/[orderNumber]", "page");
   return { ok: true };
 }
 
@@ -19,6 +20,7 @@ export async function rejectReferralAction(referralId: string, reason: string) {
   const { error } = await supabase.rpc("reject_referral", { p_referral_id: referralId, p_reason: reason || null });
   if (error) return { ok: false, error: "Could not reject referral." };
   revalidatePath("/admin/referrals");
+  revalidatePath("/admin/orders/[orderNumber]", "page");
   return { ok: true };
 }
 
@@ -30,6 +32,7 @@ export async function approvePromoRequestAction(requestId: string, percentage: n
   });
   if (error) return { ok: false, error: "Could not approve promo code." };
   revalidatePath("/admin/referrals");
+  revalidatePath("/admin/orders/[orderNumber]", "page");
   return { ok: true };
 }
 
@@ -38,5 +41,6 @@ export async function rejectPromoRequestAction(requestId: string, reason: string
   const { error } = await supabase.rpc("reject_promo_request", { p_request_id: requestId, p_reason: reason || null });
   if (error) return { ok: false, error: "Could not reject promo code." };
   revalidatePath("/admin/referrals");
+  revalidatePath("/admin/orders/[orderNumber]", "page");
   return { ok: true };
 }
