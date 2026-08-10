@@ -29,7 +29,7 @@ export const metadata: Metadata = {
   },
   description:
     "Professional academic support tailored to your requirements, deadline and academic level.",
-  metadataBase: new URL("https://writing.narix.az"),
+  metadataBase: new URL("https://write.narix.az"),
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

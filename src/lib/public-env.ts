@@ -12,4 +12,4 @@ export const SUPABASE_ANON_KEY =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2eWpndGJlcm50eXpmY2l2aHBvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODYyNzAyODMsImV4cCI6MjEwMTg0NjI4M30.6bLUBIiTiq0l6IZtIWUy6VINHssJfSwkjaftaC_VcwY";
 
-export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://write-narix.anarmammadly.workers.dev";
+export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://write.narix.az";

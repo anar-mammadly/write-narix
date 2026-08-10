@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       }
 
       await resend.emails.send({
-        from: process.env.RESEND_FROM_EMAIL ?? "Narix Academy <orders@writing.narix.az>",
+        from: process.env.RESEND_FROM_EMAIL ?? "Narix Academy <orders@write.narix.az>",
         to,
         subject,
         html: bodyHtml,
