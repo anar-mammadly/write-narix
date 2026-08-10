@@ -26,6 +26,7 @@ export type CreateOrderResult =
       finalPrice: number;
       guestToken: string | null;
       referralStatus: string | null;
+      promoStatus: string | null;
     }
   | { ok: false; error: string };
 
@@ -92,6 +93,7 @@ export async function createOrderAction(input: CreateOrderInput): Promise<Create
     final_price: string | number;
     guest_token: string | null;
     referral_status: string | null;
+    promo_status: string | null;
   };
 
   return {
@@ -101,5 +103,6 @@ export async function createOrderAction(input: CreateOrderInput): Promise<Create
     finalPrice: Number(result.final_price),
     guestToken: result.guest_token,
     referralStatus: result.referral_status,
+    promoStatus: result.promo_status,
   };
 }

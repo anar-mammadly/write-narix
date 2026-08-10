@@ -92,6 +92,14 @@ const az = {
     placeOrder: "Sifariş et — {price} AZN",
     submitting: "Göndərilir…",
     priceDisclaimer: "Diqqət: Yuxarıda göstərilən qiymət təxminidir. Son qiymət sifarişiniz və tələbləriniz komandamız tərəfindən yoxlanıldıqdan sonra təsdiqlənəcək.",
+    discountCodeStatus: {
+      pending_approval: "Kodunuz qeydə alındı — admin təsdiqindən sonra endirim sifarişinizə tətbiq olunacaq.",
+      not_found: "Daxil etdiyiniz kod tapılmadı.",
+      self_referral_blocked: "Öz referral kodunuzu özünüzə tətbiq edə bilməzsiniz.",
+      already_used_by_user: "Bu referral kodunu artıq istifadə etmisiniz.",
+      already_requested: "Bu promo kodu bu sifariş üçün artıq göndərilib.",
+      exhausted: "Bu kodun istifadə limiti bitib.",
+    },
   },
   discountSources: {
     member: "Üzv endirimi",

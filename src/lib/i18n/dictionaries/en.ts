@@ -94,6 +94,14 @@ const en = {
     placeOrder: "Place order — {price} AZN",
     submitting: "Submitting…",
     priceDisclaimer: "Please note: The price shown above is an estimated price. The final price will be confirmed after your order and requirements have been reviewed by our team.",
+    discountCodeStatus: {
+      pending_approval: "Your code was recorded — the discount will apply to your order once an admin approves it.",
+      not_found: "The code you entered could not be found.",
+      self_referral_blocked: "You can't apply your own referral code to your own order.",
+      already_used_by_user: "You've already used this referral code.",
+      already_requested: "This promo code has already been submitted for this order.",
+      exhausted: "This code has reached its usage limit.",
+    },
   },
   discountSources: {
     member: "Member discount",

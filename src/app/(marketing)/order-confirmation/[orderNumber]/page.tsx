@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { CheckCircle2, MessageCircle } from "lucide-react";
+import { CheckCircle2, MessageCircle, Info } from "lucide-react";
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getSiteSettings, buildWhatsAppUrl } from "@/lib/data/site-settings";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
@@ -11,12 +11,16 @@ export default async function OrderConfirmationPage({
   searchParams,
 }: {
   params: Promise<{ orderNumber: string }>;
-  searchParams: Promise<{ token?: string }>;
+  searchParams: Promise<{ token?: string; referral?: string; promo?: string }>;
 }) {
   const { orderNumber } = await params;
-  const { token } = await searchParams;
+  const { token, referral, promo } = await searchParams;
   const supabase = await createServerSupabaseClient();
   const [settings, dict] = await Promise.all([getSiteSettings(), getDictionary()]);
+
+  const discountCodeStatus = dict.calculator.discountCodeStatus as Record<string, string>;
+  const referralNote = referral ? discountCodeStatus[referral] : null;
+  const promoNote = promo ? discountCodeStatus[promo] : null;
 
   let order: {
     order_number: string;
@@ -86,6 +90,23 @@ export default async function OrderConfirmationPage({
           {dict.orderConfirmation.saveLinkPrefix}{" "}
           <Link href={trackUrl} className="text-primary underline">{trackUrl}</Link>
         </p>
+      )}
+
+      {(referralNote || promoNote) && (
+        <div className="mt-4 grid gap-2 text-left">
+          {referralNote && (
+            <p className={`flex items-start gap-2 rounded-lg border px-4 py-3 text-sm ${referral === "pending_approval" ? "border-success/30 bg-success-soft text-foreground" : "border-warning/30 bg-warning-soft text-foreground"}`}>
+              <Info className="mt-0.5 size-4 shrink-0" />
+              {referralNote}
+            </p>
+          )}
+          {promoNote && (
+            <p className={`flex items-start gap-2 rounded-lg border px-4 py-3 text-sm ${promo === "pending_approval" ? "border-success/30 bg-success-soft text-foreground" : "border-warning/30 bg-warning-soft text-foreground"}`}>
+              <Info className="mt-0.5 size-4 shrink-0" />
+              {promoNote}
+            </p>
+          )}
+        </div>
       )}
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">

@@ -351,9 +351,13 @@ export function Calculator({
             promoCode: promoCode || null,
           }}
           onBack={() => setStep("configure")}
-          onSuccess={(orderNumber, token) => {
-            const q = token ? `?token=${token}` : "";
-            router.push(`/order-confirmation/${orderNumber}${q}`);
+          onSuccess={(orderNumber, token, referralStatus, promoStatus) => {
+            const params = new URLSearchParams();
+            if (token) params.set("token", token);
+            if (referralStatus) params.set("referral", referralStatus);
+            if (promoStatus) params.set("promo", promoStatus);
+            const q = params.toString();
+            router.push(`/order-confirmation/${orderNumber}${q ? `?${q}` : ""}`);
           }}
         />
       )}
@@ -480,7 +484,7 @@ function OrderDetailsStep({
   selection: Parameters<typeof previewPriceAction>[0];
   dict: Dictionary;
   onBack: () => void;
-  onSuccess: (orderNumber: string, token: string | null) => void;
+  onSuccess: (orderNumber: string, token: string | null, referralStatus: string | null, promoStatus: string | null) => void;
 }) {
   const [subject, setSubject] = useState("");
   const [topic, setTopic] = useState("");
@@ -515,7 +519,7 @@ function OrderDetailsStep({
         setError(result.error);
         return;
       }
-      onSuccess(result.orderNumber, result.guestToken);
+      onSuccess(result.orderNumber, result.guestToken, result.referralStatus, result.promoStatus);
     });
   }
 
