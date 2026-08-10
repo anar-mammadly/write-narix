@@ -464,6 +464,21 @@ export interface Database {
         },
         never
       >;
+      promo_code_requests: Table<
+        {
+          id: string;
+          promo_code_id: string;
+          order_id: string;
+          user_id: string | null;
+          percentage: number | null;
+          status: ReferralStatus;
+          approved_by: string | null;
+          approved_at: string | null;
+          rejected_reason: string | null;
+          created_at: string;
+        },
+        never
+      >;
       discount_applications: Table<
         {
           id: string;
@@ -581,6 +596,9 @@ export interface Database {
       claim_guest_order: { Args: { p_order_number: string; p_token: string }; Returns: Json };
       approve_referral: { Args: { p_referral_id: string }; Returns: Json };
       reject_referral: { Args: { p_referral_id: string; p_reason: string | null }; Returns: Json };
+      approve_referral_with_percentage: { Args: { p_referral_id: string; p_percentage: number }; Returns: Json };
+      approve_promo_request: { Args: { p_request_id: string; p_percentage: number }; Returns: Json };
+      reject_promo_request: { Args: { p_request_id: string; p_reason: string | null }; Returns: Json };
       change_order_status: { Args: { p_order_id: string; p_new_status_id: string; p_note: string | null }; Returns: Json };
       unlock_order: { Args: { p_order_id: string }; Returns: void };
     };

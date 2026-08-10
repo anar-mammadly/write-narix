@@ -1,24 +1,22 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { approveReferralAction, rejectReferralAction } from "@/lib/actions/admin-referrals";
+import { approvePromoRequestAction, rejectPromoRequestAction } from "@/lib/actions/admin-referrals";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 import { formatMessage } from "@/lib/i18n/format";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-export function ReferralApprovalRow({
+export function PromoRequestApprovalRow({
   id,
   code,
-  referrerName,
-  referredName,
+  customerName,
   orderNumber,
   dict,
 }: {
   id: string;
   code: string;
-  referrerName: string;
-  referredName: string;
+  customerName: string;
   orderNumber: string;
   dict: Dictionary;
 }) {
@@ -35,8 +33,8 @@ export function ReferralApprovalRow({
   return (
     <li className="flex flex-wrap items-center justify-between gap-3 px-4 py-4">
       <div className="text-sm">
-        <p className="font-medium text-foreground">{formatMessage(t.referredBy, { code, order: orderNumber })}</p>
-        <p className="text-muted-foreground">{formatMessage(t.referredBody, { referrer: referrerName, referred: referredName })}</p>
+        <p className="font-medium text-foreground">{formatMessage(t.promoUsedBy, { code, order: orderNumber })}</p>
+        <p className="text-muted-foreground">{customerName}</p>
         {error && <p className="text-destructive">{error}</p>}
       </div>
       <div className="flex flex-wrap items-center gap-2">
@@ -58,7 +56,7 @@ export function ReferralApprovalRow({
           disabled={pending || !pctValid}
           onClick={() =>
             startTransition(async () => {
-              const result = await approveReferralAction(id, Number(pct));
+              const result = await approvePromoRequestAction(id, Number(pct));
               if (!result.ok) setError(result.error ?? "Failed");
               else setDone(true);
             })
@@ -72,7 +70,7 @@ export function ReferralApprovalRow({
           disabled={pending}
           onClick={() =>
             startTransition(async () => {
-              const result = await rejectReferralAction(id, "Not eligible");
+              const result = await rejectPromoRequestAction(id, "Not eligible");
               if (!result.ok) setError(result.error ?? "Failed");
               else setDone(true);
             })
