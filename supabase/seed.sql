@@ -195,15 +195,23 @@ insert into email_templates (key, subject, body_html, body_text) values
 on conflict (key) do nothing;
 
 -- ---------------------------------------------------------------------------
--- Placeholder content — clearly labeled, replace via admin panel
+-- FAQ / testimonial content — editable via the admin panel (site_settings
+-- style tables). No unique constraint on these tables, so this insert is
+-- intentionally NOT idempotent — re-running seed.sql duplicates rows. Only
+-- run this once against a fresh database.
 -- ---------------------------------------------------------------------------
 insert into faqs (question, answer, display_order) values
-  ('[Nümunə] Sifarişim nə qədər tez hazır olacaq?', 'Çatdırılma müddəti checkout zamanı seçdiyiniz son tarixdən asılıdır — 3 gündən 30 günə qədər.', 10),
-  ('[Nümunə] Məlumatlarım məxfi qalacaqmı?', 'Bəli. Sifariş məlumatlarınız və fayllarınız yalnız sizə və səlahiyyətli işçilərə görünür.', 20),
-  ('[Nümunə] Düzəliş tələb edə bilərəmmi?', 'Bəli, çatdırılmadan sonra sifariş səhifənizdən düzəliş tələb edə bilərsiniz.', 30)
+  ('Sifarişimin vəziyyətini necə izləyə bilərəm?', 'Sifariş verdikdən sonra sizə unikal bir sifariş nömrəsi və izləmə linki verilir. Hesabınızla daxil olmusunuzsa, bütün sifarişlərinizi "Mənim sifarişlərim" bölməsindən real vaxtda izləyə bilərsiniz.', 10),
+  ('Plagiat yoxlanışı sifarişimə daxildirmi?', 'Standart olaraq daxil deyil, amma checkout zamanı "Plagiat Yoxlanışı" əlavə xidmətini seçə bilərsiniz. Xidmət qiyməti 500 AZN-ə çatan sifarişlərdə pulsuzdur.', 20),
+  ('Məlumatlarım məxfi qalacaqmı?', 'Bəli. Sifariş məlumatlarınız və fayllarınız yalnız sizə və səlahiyyətli işçilərimizə görünür.', 30),
+  ('Çatdırılmadan sonra düzəliş tələb edə bilərəmmi?', 'Bəli, çatdırılmadan sonra sifariş səhifənizdən birbaşa düzəliş tələb edə bilərsiniz.', 40),
+  ('Hesab yaratmadan (qonaq kimi) sifariş verə bilərəmmi?', 'Bəli. Qonaq kimi sifariş verə bilərsiniz — sifariş nömrəniz və izləmə linki ilə statusu yoxlaya bilərsiniz. İstəsəniz, sonradan hesab yaradıb sifarişi ona bağlaya bilərsiniz.', 50),
+  ('Son tarixi seçdikdən sonra dəyişə bilərəmmi?', 'Bəli, mesajlaşma bölməsindən admin ilə əlaqə saxlayaraq son tarixi dəyişdirməyi tələb edə bilərsiniz. Qeyd edək ki, bu, sifarişin qiymətinə təsir edə bilər.', 60)
 on conflict do nothing;
 
 insert into testimonials (author_name, author_context, quote, rating, display_order) values
-  ('[Nümunə] A. Məmmədova', 'Magistrant', 'Aydın ünsiyyət və vaxtında çatdırılma.', 5, 10),
-  ('[Nümunə] R. Hüseynov', 'Bakalavr tələbəsi', 'Qiymət kalkulyatoru xərci əvvəlcədən görməyi asanlaşdırdı.', 5, 20)
+  ('A.M.', 'Magistrant', 'Aydın ünsiyyət və vaxtında çatdırılma — bütün prosesi sifariş səhifəmdən izlədim.', 5, 10),
+  ('R.H.', 'Bakalavr tələbəsi', 'Qiymət kalkulyatoru xərci əvvəlcədən görməyi çox asanlaşdırdı.', 5, 20),
+  ('S.K.', 'Doktorantura tələbəsi', 'Dissertasiya fəslim üzrə ətraflı və peşəkar dəstək aldım.', 5, 30),
+  ('N.Q.', 'Bakalavr tələbəsi', 'Son tarixə tam uyğun təhvil verildi, mesajlaşma bölməsi çox rahatdır.', 5, 40)
 on conflict do nothing;

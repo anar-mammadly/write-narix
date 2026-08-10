@@ -2738,15 +2738,24 @@ update faqs set translations = jsonb_build_object('en', jsonb_build_object(
   'question', v.question_en, 'answer', v.answer_en
 ))
 from (values
-  ('[Nümunə] Sifarişim nə qədər tez hazır olacaq?',
-   '[Sample] How fast can you deliver my order?',
-   'Delivery time depends on the deadline you select at checkout — from 3 to 30 days.'),
-  ('[Nümunə] Məlumatlarım məxfi qalacaqmı?',
-   '[Sample] Is my information confidential?',
+  ('Sifarişimin vəziyyətini necə izləyə bilərəm?',
+   'How can I track my order status?',
+   'Once you place an order, you get a unique order number and a tracking link. If you are signed in, you can track all your orders in real time from the "My Orders" section.'),
+  ('Plagiat yoxlanışı sifarişimə daxildirmi?',
+   'Is a plagiarism check included in my order?',
+   'Not by default, but you can add the "Plagiarism Check" add-on at checkout. It becomes free once your order reaches 500 AZN.'),
+  ('Məlumatlarım məxfi qalacaqmı?',
+   'Will my information stay confidential?',
    'Yes. Your order details and files are only visible to you and authorized staff.'),
-  ('[Nümunə] Düzəliş tələb edə bilərəmmi?',
-   '[Sample] Can I request revisions?',
-   'Yes, revisions can be requested from your order page after delivery.')
+  ('Çatdırılmadan sonra düzəliş tələb edə bilərəmmi?',
+   'Can I request revisions after delivery?',
+   'Yes, you can request revisions directly from your order page after delivery.'),
+  ('Hesab yaratmadan (qonaq kimi) sifariş verə bilərəmmi?',
+   'Can I order without creating an account?',
+   'Yes. You can check out as a guest and track your order with your order number and tracking link. You can create an account later and link the order to it.'),
+  ('Son tarixi seçdikdən sonra dəyişə bilərəmmi?',
+   'Can I change the deadline after placing my order?',
+   'Yes, you can contact us via the messages section to request a deadline change. Note that this may affect your order price.')
 ) as v(question_az, question_en, answer_en)
 where faqs.question = v.question_az;
 
@@ -2754,8 +2763,10 @@ update testimonials set translations = jsonb_build_object('en', jsonb_build_obje
   'author_name', v.author_name_en, 'author_context', v.author_context_en, 'quote', v.quote_en
 ))
 from (values
-  ('[Nümunə] A. Məmmədova', '[Sample] A. Mammadova', 'Master''s student', 'Clear communication and delivered on time.'),
-  ('[Nümunə] R. Hüseynov', '[Sample] R. Huseynov', 'Bachelor''s student', 'The pricing calculator made it easy to see the cost upfront.')
+  ('A.M.', 'A.M.', 'Master''s student', 'Clear communication and delivered on time — I tracked the whole process from my order page.'),
+  ('R.H.', 'R.H.', 'Bachelor''s student', 'The pricing calculator made it easy to see the cost upfront.'),
+  ('S.K.', 'S.K.', 'PhD student', 'I received thorough, professional support on my dissertation chapter.'),
+  ('N.Q.', 'N.Q.', 'Bachelor''s student', 'Delivered right on the deadline, and the messaging section made communication easy.')
 ) as v(author_name_az, author_name_en, author_context_en, quote_en)
 where testimonials.author_name = v.author_name_az;
 
@@ -3702,15 +3713,23 @@ insert into email_templates (key, subject, body_html, body_text) values
 on conflict (key) do nothing;
 
 -- ---------------------------------------------------------------------------
--- Placeholder content — clearly labeled, replace via admin panel
+-- FAQ / testimonial content — editable via the admin panel (site_settings
+-- style tables). No unique constraint on these tables, so this insert is
+-- intentionally NOT idempotent — re-running seed.sql duplicates rows. Only
+-- run this once against a fresh database.
 -- ---------------------------------------------------------------------------
 insert into faqs (question, answer, display_order) values
-  ('[Nümunə] Sifarişim nə qədər tez hazır olacaq?', 'Çatdırılma müddəti checkout zamanı seçdiyiniz son tarixdən asılıdır — 3 gündən 30 günə qədər.', 10),
-  ('[Nümunə] Məlumatlarım məxfi qalacaqmı?', 'Bəli. Sifariş məlumatlarınız və fayllarınız yalnız sizə və səlahiyyətli işçilərə görünür.', 20),
-  ('[Nümunə] Düzəliş tələb edə bilərəmmi?', 'Bəli, çatdırılmadan sonra sifariş səhifənizdən düzəliş tələb edə bilərsiniz.', 30)
+  ('Sifarişimin vəziyyətini necə izləyə bilərəm?', 'Sifariş verdikdən sonra sizə unikal bir sifariş nömrəsi və izləmə linki verilir. Hesabınızla daxil olmusunuzsa, bütün sifarişlərinizi "Mənim sifarişlərim" bölməsindən real vaxtda izləyə bilərsiniz.', 10),
+  ('Plagiat yoxlanışı sifarişimə daxildirmi?', 'Standart olaraq daxil deyil, amma checkout zamanı "Plagiat Yoxlanışı" əlavə xidmətini seçə bilərsiniz. Xidmət qiyməti 500 AZN-ə çatan sifarişlərdə pulsuzdur.', 20),
+  ('Məlumatlarım məxfi qalacaqmı?', 'Bəli. Sifariş məlumatlarınız və fayllarınız yalnız sizə və səlahiyyətli işçilərimizə görünür.', 30),
+  ('Çatdırılmadan sonra düzəliş tələb edə bilərəmmi?', 'Bəli, çatdırılmadan sonra sifariş səhifənizdən birbaşa düzəliş tələb edə bilərsiniz.', 40),
+  ('Hesab yaratmadan (qonaq kimi) sifariş verə bilərəmmi?', 'Bəli. Qonaq kimi sifariş verə bilərsiniz — sifariş nömrəniz və izləmə linki ilə statusu yoxlaya bilərsiniz. İstəsəniz, sonradan hesab yaradıb sifarişi ona bağlaya bilərsiniz.', 50),
+  ('Son tarixi seçdikdən sonra dəyişə bilərəmmi?', 'Bəli, mesajlaşma bölməsindən admin ilə əlaqə saxlayaraq son tarixi dəyişdirməyi tələb edə bilərsiniz. Qeyd edək ki, bu, sifarişin qiymətinə təsir edə bilər.', 60)
 on conflict do nothing;
 
 insert into testimonials (author_name, author_context, quote, rating, display_order) values
-  ('[Nümunə] A. Məmmədova', 'Magistrant', 'Aydın ünsiyyət və vaxtında çatdırılma.', 5, 10),
-  ('[Nümunə] R. Hüseynov', 'Bakalavr tələbəsi', 'Qiymət kalkulyatoru xərci əvvəlcədən görməyi asanlaşdırdı.', 5, 20)
+  ('A.M.', 'Magistrant', 'Aydın ünsiyyət və vaxtında çatdırılma — bütün prosesi sifariş səhifəmdən izlədim.', 5, 10),
+  ('R.H.', 'Bakalavr tələbəsi', 'Qiymət kalkulyatoru xərci əvvəlcədən görməyi çox asanlaşdırdı.', 5, 20),
+  ('S.K.', 'Doktorantura tələbəsi', 'Dissertasiya fəslim üzrə ətraflı və peşəkar dəstək aldım.', 5, 30),
+  ('N.Q.', 'Bakalavr tələbəsi', 'Son tarixə tam uyğun təhvil verildi, mesajlaşma bölməsi çox rahatdır.', 5, 40)
 on conflict do nothing;

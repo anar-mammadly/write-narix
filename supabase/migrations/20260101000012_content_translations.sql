@@ -69,15 +69,24 @@ update faqs set translations = jsonb_build_object('en', jsonb_build_object(
   'question', v.question_en, 'answer', v.answer_en
 ))
 from (values
-  ('[Nümunə] Sifarişim nə qədər tez hazır olacaq?',
-   '[Sample] How fast can you deliver my order?',
-   'Delivery time depends on the deadline you select at checkout — from 3 to 30 days.'),
-  ('[Nümunə] Məlumatlarım məxfi qalacaqmı?',
-   '[Sample] Is my information confidential?',
+  ('Sifarişimin vəziyyətini necə izləyə bilərəm?',
+   'How can I track my order status?',
+   'Once you place an order, you get a unique order number and a tracking link. If you are signed in, you can track all your orders in real time from the "My Orders" section.'),
+  ('Plagiat yoxlanışı sifarişimə daxildirmi?',
+   'Is a plagiarism check included in my order?',
+   'Not by default, but you can add the "Plagiarism Check" add-on at checkout. It becomes free once your order reaches 500 AZN.'),
+  ('Məlumatlarım məxfi qalacaqmı?',
+   'Will my information stay confidential?',
    'Yes. Your order details and files are only visible to you and authorized staff.'),
-  ('[Nümunə] Düzəliş tələb edə bilərəmmi?',
-   '[Sample] Can I request revisions?',
-   'Yes, revisions can be requested from your order page after delivery.')
+  ('Çatdırılmadan sonra düzəliş tələb edə bilərəmmi?',
+   'Can I request revisions after delivery?',
+   'Yes, you can request revisions directly from your order page after delivery.'),
+  ('Hesab yaratmadan (qonaq kimi) sifariş verə bilərəmmi?',
+   'Can I order without creating an account?',
+   'Yes. You can check out as a guest and track your order with your order number and tracking link. You can create an account later and link the order to it.'),
+  ('Son tarixi seçdikdən sonra dəyişə bilərəmmi?',
+   'Can I change the deadline after placing my order?',
+   'Yes, you can contact us via the messages section to request a deadline change. Note that this may affect your order price.')
 ) as v(question_az, question_en, answer_en)
 where faqs.question = v.question_az;
 
@@ -85,7 +94,9 @@ update testimonials set translations = jsonb_build_object('en', jsonb_build_obje
   'author_name', v.author_name_en, 'author_context', v.author_context_en, 'quote', v.quote_en
 ))
 from (values
-  ('[Nümunə] A. Məmmədova', '[Sample] A. Mammadova', 'Master''s student', 'Clear communication and delivered on time.'),
-  ('[Nümunə] R. Hüseynov', '[Sample] R. Huseynov', 'Bachelor''s student', 'The pricing calculator made it easy to see the cost upfront.')
+  ('A.M.', 'A.M.', 'Master''s student', 'Clear communication and delivered on time — I tracked the whole process from my order page.'),
+  ('R.H.', 'R.H.', 'Bachelor''s student', 'The pricing calculator made it easy to see the cost upfront.'),
+  ('S.K.', 'S.K.', 'PhD student', 'I received thorough, professional support on my dissertation chapter.'),
+  ('N.Q.', 'N.Q.', 'Bachelor''s student', 'Delivered right on the deadline, and the messaging section made communication easy.')
 ) as v(author_name_az, author_name_en, author_context_en, quote_en)
 where testimonials.author_name = v.author_name_az;
