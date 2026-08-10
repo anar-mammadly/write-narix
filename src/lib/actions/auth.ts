@@ -44,7 +44,12 @@ export async function signUpAction(
 
 const verifySignupOtpSchema = z.object({
   email: z.string().email(),
-  token: z.string().min(6, "Enter the 6-digit code").max(6),
+  token: z
+    .string()
+    .trim()
+    .min(6, "Enter the verification code")
+    .max(10)
+    .regex(/^\d+$/, "Enter the verification code"),
 });
 
 export async function verifySignupOtpAction(

@@ -30,11 +30,11 @@ export function VerifyOtpForm({ dict, email }: { dict: Dictionary; email: string
             name="token"
             inputMode="numeric"
             autoComplete="one-time-code"
-            maxLength={6}
+            maxLength={10}
             minLength={6}
-            pattern="[0-9]{6}"
-            placeholder="000000"
-            className="text-center text-lg tracking-[0.5em]"
+            pattern="[0-9]{6,10}"
+            placeholder="00000000"
+            className="text-center text-lg tracking-[0.3em]"
             required
             autoFocus
           />

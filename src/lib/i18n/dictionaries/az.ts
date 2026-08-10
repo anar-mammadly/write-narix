@@ -164,7 +164,7 @@ const az = {
     },
     verifyOtp: {
       title: "Emailinizi təsdiqləyin",
-      subtitle: "{email} ünvanına 6 rəqəmli kod göndərdik. Qeydiyyatı tamamlamaq üçün kodu daxil edin.",
+      subtitle: "{email} ünvanına təsdiq kodu göndərdik. Qeydiyyatı tamamlamaq üçün kodu daxil edin.",
       codeLabel: "Təsdiq kodu",
       submit: "Təsdiqlə",
       submitting: "Təsdiqlənir…",

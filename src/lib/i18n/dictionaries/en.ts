@@ -166,7 +166,7 @@ const en = {
     },
     verifyOtp: {
       title: "Verify your email",
-      subtitle: "We sent a 6-digit code to {email}. Enter it below to finish creating your account.",
+      subtitle: "We sent a verification code to {email}. Enter it below to finish creating your account.",
       codeLabel: "Verification code",
       submit: "Verify",
       submitting: "Verifying…",
