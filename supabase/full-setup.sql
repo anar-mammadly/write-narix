@@ -1451,18 +1451,18 @@ begin
 
   if p_language_id is not null then
     select * into lang from languages where id = p_language_id and is_active = true;
-    if lang is not null then base := base + lang.extra_fee; end if;
+    if lang.id is not null then base := base + lang.extra_fee; end if;
   end if;
 
   if p_citation_style_id is not null then
     select * into citation from citation_styles where id = p_citation_style_id and is_active = true;
-    if citation is not null then base := base + citation.extra_fee; end if;
+    if citation.id is not null then base := base + citation.extra_fee; end if;
   end if;
 
   if p_additional_service_ids is not null then
     foreach addon_id in array p_additional_service_ids loop
       select * into addon from additional_services where id = addon_id and is_active = true;
-      if addon is not null then
+      if addon.id is not null then
         if addon.price_type = 'fixed' then
           addons_total := addons_total + addon.price_value;
         else
@@ -1499,7 +1499,7 @@ begin
      and (start_date is null or start_date <= now())
      and (end_date is null or end_date >= now())
    order by created_at desc limit 1;
-  if early is not null and early.percentage is not null then
+  if early.id is not null and early.percentage is not null then
     candidates := candidates || jsonb_build_object(
       'source', 'early_order', 'reference_id', early.id,
       'percentage', early.percentage, 'amount', round(subtotal * early.percentage / 100, 2)
@@ -1513,7 +1513,7 @@ begin
        and status = 'approved'
        and consumed_at is null
        and (expires_at is null or expires_at > now());
-    if benefit is not null then
+    if benefit.id is not null then
       candidates := candidates || jsonb_build_object(
         'source', 'referral', 'reference_id', benefit.id,
         'percentage', benefit.percentage, 'amount', round(subtotal * benefit.percentage / 100, 2)
@@ -2554,18 +2554,18 @@ begin
 
   if p_language_id is not null then
     select * into lang from languages where id = p_language_id and is_active = true;
-    if lang is not null then base := base + lang.extra_fee; end if;
+    if lang.id is not null then base := base + lang.extra_fee; end if;
   end if;
 
   if p_citation_style_id is not null then
     select * into citation from citation_styles where id = p_citation_style_id and is_active = true;
-    if citation is not null then base := base + citation.extra_fee; end if;
+    if citation.id is not null then base := base + citation.extra_fee; end if;
   end if;
 
   if p_additional_service_ids is not null then
     foreach addon_id in array p_additional_service_ids loop
       select * into addon from additional_services where id = addon_id and is_active = true;
-      if addon is not null then
+      if addon.id is not null then
         if addon.price_type = 'fixed' then
           addons_total := addons_total + addon.price_value;
         else
@@ -2602,7 +2602,7 @@ begin
      and (start_date is null or start_date <= now())
      and (end_date is null or end_date >= now())
    order by created_at desc limit 1;
-  if early is not null and early.percentage is not null then
+  if early.id is not null and early.percentage is not null then
     candidates := candidates || jsonb_build_object(
       'source', 'early_order', 'reference_id', early.id,
       'percentage', early.percentage, 'amount', round(subtotal * early.percentage / 100, 2)
@@ -2616,7 +2616,7 @@ begin
        and status = 'approved'
        and consumed_at is null
        and (expires_at is null or expires_at > now());
-    if benefit is not null then
+    if benefit.id is not null then
       candidates := candidates || jsonb_build_object(
         'source', 'referral', 'reference_id', benefit.id,
         'percentage', benefit.percentage, 'amount', round(subtotal * benefit.percentage / 100, 2)
@@ -2877,18 +2877,18 @@ begin
 
   if p_language_id is not null then
     select * into lang from languages where id = p_language_id and is_active = true;
-    if lang is not null then base := base + lang.extra_fee; end if;
+    if lang.id is not null then base := base + lang.extra_fee; end if;
   end if;
 
   if p_citation_style_id is not null then
     select * into citation from citation_styles where id = p_citation_style_id and is_active = true;
-    if citation is not null then base := base + citation.extra_fee; end if;
+    if citation.id is not null then base := base + citation.extra_fee; end if;
   end if;
 
   if p_additional_service_ids is not null then
     foreach addon_id in array p_additional_service_ids loop
       select * into addon from additional_services where id = addon_id and is_active = true;
-      if addon is not null then
+      if addon.id is not null then
         if addon.is_plagiarism_addon then
           -- Threshold is checked against the pure service subtotal, before
           -- language/citation fees or any other add-on — never against the
@@ -2932,7 +2932,7 @@ begin
      and (start_date is null or start_date <= now())
      and (end_date is null or end_date >= now())
    order by created_at desc limit 1;
-  if early is not null and early.percentage is not null then
+  if early.id is not null and early.percentage is not null then
     candidates := candidates || jsonb_build_object(
       'source', 'early_order', 'reference_id', early.id,
       'percentage', early.percentage, 'amount', round(subtotal * early.percentage / 100, 2)
@@ -2946,7 +2946,7 @@ begin
        and status = 'approved'
        and consumed_at is null
        and (expires_at is null or expires_at > now());
-    if benefit is not null then
+    if benefit.id is not null then
       candidates := candidates || jsonb_build_object(
         'source', 'referral', 'reference_id', benefit.id,
         'percentage', benefit.percentage, 'amount', round(subtotal * benefit.percentage / 100, 2)
@@ -3360,18 +3360,18 @@ begin
 
   if p_language_id is not null then
     select * into lang from languages where id = p_language_id and is_active = true;
-    if lang is not null then base := base + lang.extra_fee; end if;
+    if lang.id is not null then base := base + lang.extra_fee; end if;
   end if;
 
   if p_citation_style_id is not null then
     select * into citation from citation_styles where id = p_citation_style_id and is_active = true;
-    if citation is not null then base := base + citation.extra_fee; end if;
+    if citation.id is not null then base := base + citation.extra_fee; end if;
   end if;
 
   if p_additional_service_ids is not null then
     foreach addon_id in array p_additional_service_ids loop
       select * into addon from additional_services where id = addon_id and is_active = true;
-      if addon is not null then
+      if addon.id is not null then
         if addon.is_plagiarism_addon then
           -- Threshold is checked against the pure service subtotal, before
           -- language/citation fees, other add-ons, or the deadline surcharge
@@ -3416,7 +3416,7 @@ begin
      and (start_date is null or start_date <= now())
      and (end_date is null or end_date >= now())
    order by created_at desc limit 1;
-  if early is not null and early.percentage is not null then
+  if early.id is not null and early.percentage is not null then
     candidates := candidates || jsonb_build_object(
       'source', 'early_order', 'reference_id', early.id,
       'percentage', early.percentage, 'amount', round(subtotal * early.percentage / 100, 2)
@@ -3430,7 +3430,7 @@ begin
        and status = 'approved'
        and consumed_at is null
        and (expires_at is null or expires_at > now());
-    if benefit is not null then
+    if benefit.id is not null then
       candidates := candidates || jsonb_build_object(
         'source', 'referral', 'reference_id', benefit.id,
         'percentage', benefit.percentage, 'amount', round(subtotal * benefit.percentage / 100, 2)
@@ -3685,18 +3685,18 @@ begin
 
   if p_language_id is not null then
     select * into lang from languages where id = p_language_id and is_active = true;
-    if lang is not null then base := base + lang.extra_fee; end if;
+    if lang.id is not null then base := base + lang.extra_fee; end if;
   end if;
 
   if p_citation_style_id is not null then
     select * into citation from citation_styles where id = p_citation_style_id and is_active = true;
-    if citation is not null then base := base + citation.extra_fee; end if;
+    if citation.id is not null then base := base + citation.extra_fee; end if;
   end if;
 
   if p_additional_service_ids is not null then
     foreach addon_id in array p_additional_service_ids loop
       select * into addon from additional_services where id = addon_id and is_active = true;
-      if addon is not null then
+      if addon.id is not null then
         if addon.is_plagiarism_addon then
           -- Threshold is checked against the pure service subtotal, before
           -- language/citation fees, other add-ons, or the deadline surcharge
@@ -3741,7 +3741,7 @@ begin
      and (start_date is null or start_date <= now())
      and (end_date is null or end_date >= now())
    order by created_at desc limit 1;
-  if early is not null and early.percentage is not null then
+  if early.id is not null and early.percentage is not null then
     candidates := candidates || jsonb_build_object(
       'source', 'early_order', 'reference_id', early.id,
       'percentage', early.percentage, 'amount', round(subtotal * early.percentage / 100, 2)
@@ -3755,7 +3755,7 @@ begin
        and status = 'approved'
        and consumed_at is null
        and (expires_at is null or expires_at > now());
-    if benefit is not null then
+    if benefit.id is not null then
       candidates := candidates || jsonb_build_object(
         'source', 'referral', 'reference_id', benefit.id,
         'percentage', benefit.percentage, 'amount', round(subtotal * benefit.percentage / 100, 2)
