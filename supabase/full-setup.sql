@@ -2188,18 +2188,22 @@ grant execute on function unlock_order(uuid) to authenticated;
 
 insert into storage.buckets (id, name, public, file_size_limit, allowed_mime_types)
 values (
-  'order-files', 'order-files', false, 26214400, -- 25MB
+  'order-files', 'order-files', false, 4194304, -- 4MB
   array[
     'application/pdf',
     'application/msword',
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'image/png', 'image/jpeg', 'image/webp',
     'application/vnd.ms-excel',
     'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'application/vnd.ms-powerpoint',
+    'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    'image/png', 'image/jpeg', 'image/webp',
     'text/csv'
   ]
 )
-on conflict (id) do nothing;
+on conflict (id) do update set
+  file_size_limit = excluded.file_size_limit,
+  allowed_mime_types = excluded.allowed_mime_types;
 
 -- storage.objects.name for this bucket looks like: orders/<order_id>/<category>/<uuid>-<filename>
 create or replace function storage_path_order_id(p_name text)
@@ -2213,6 +2217,11 @@ as $$
     else null
   end;
 $$;
+
+-- Runs inside the order-files RLS policies below (owns_order(storage_path_
+-- order_id(name))), evaluated as whichever role made the storage request —
+-- without this grant every upload/download against the bucket is rejected.
+grant execute on function storage_path_order_id(text) to anon, authenticated;
 
 create policy order_files_select on storage.objects
   for select using (
