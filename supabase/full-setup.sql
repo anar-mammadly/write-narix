@@ -4428,6 +4428,7 @@ on conflict (key) do nothing;
 -- ---------------------------------------------------------------------------
 
 alter table orders add column if not exists reviewed_price numeric(10,2);
+alter table orders add column if not exists original_price numeric(10,2);
 
 create or replace function get_order_contact(p_order_id uuid)
 returns jsonb
@@ -4481,6 +4482,7 @@ begin
   end if;
 
   update orders set
+    original_price = coalesce(o.original_price, o.final_price),
     reviewed_price = p_amount,
     final_price = p_amount,
     discount_source = null,

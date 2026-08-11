@@ -256,6 +256,7 @@ export interface Database {
           discount_amount: number;
           final_price: number;
           reviewed_price: number | null;
+          original_price: number | null;
           paid_amount: number;
           remaining_amount: number;
           is_fully_paid: boolean;

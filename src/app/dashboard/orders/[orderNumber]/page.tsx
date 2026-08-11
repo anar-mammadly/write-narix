@@ -16,7 +16,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
   const { data: order } = await supabase
     .from("orders")
     .select(
-      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, reviewed_price, paid_amount, remaining_amount, is_fully_paid, created_at, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label)"
+      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, reviewed_price, original_price, paid_amount, remaining_amount, is_fully_paid, created_at, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label)"
     )
     .eq("order_number", orderNumber)
     .single();
@@ -60,17 +60,15 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
         <Badge style={{ backgroundColor: status?.color, color: "white" }}>{status?.name}</Badge>
       </div>
 
-      <div className="mt-6 grid grid-cols-3 gap-2 rounded-xl border border-border bg-card p-4 text-sm sm:gap-4 sm:p-5">
-        <div><p className="text-muted-foreground">{t.total}</p><p className="mt-1 font-medium">{Number(order.final_price).toFixed(2)} {dict.common.currency}</p></div>
+      <div className={`mt-6 grid gap-2 rounded-xl border border-border bg-card p-4 text-sm sm:gap-4 sm:p-5 ${order.reviewed_price != null ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3"}`}>
+        <div><p className="text-muted-foreground">{t.total}</p><p className="mt-1 font-medium">{Number(order.original_price ?? order.final_price).toFixed(2)} {dict.common.currency}</p></div>
+        {order.reviewed_price != null && (
+          <div><p className="text-muted-foreground">{dict.admin.workspace.reviewedPriceTitle}</p><p className="mt-1 font-medium text-success">{Number(order.reviewed_price).toFixed(2)} {dict.common.currency}</p></div>
+        )}
         <div><p className="text-muted-foreground">{t.paid}</p><p className="mt-1 font-medium">{Number(order.paid_amount).toFixed(2)} {dict.common.currency}</p></div>
         <div><p className="text-muted-foreground">{t.remaining}</p><p className="mt-1 font-medium">{Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</p></div>
       </div>
 
-      {order.reviewed_price != null && (
-        <p className="mt-3 text-sm text-success">
-          {t.reviewedPriceLabel} {Number(order.reviewed_price).toFixed(2)} {dict.common.currency}
-        </p>
-      )}
       {order.discount_source && Number(order.discount_amount) > 0 && (
         <p className="mt-3 text-sm text-success">
           {dict.discountSources[order.discount_source]} {Number(order.discount_percentage)}% (-{Number(order.discount_amount).toFixed(2)} {dict.common.currency})
