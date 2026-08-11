@@ -262,6 +262,7 @@ const en = {
       noPaymentRequests: "No payment requests.",
       paymentHistory: "Payment history",
       noPayments: "No payments recorded yet.",
+      reviewedPriceLabel: "Post-review final price:",
     },
     referral: {
       title: "Invite a Friend",
@@ -368,6 +369,12 @@ const en = {
       selected: "Selected",
       notSelected: "Not selected",
       discountRequestsTitle: "Referral / promo code",
+      contactTitle: "Contact info",
+      email: "Email",
+      phone: "Phone",
+      reviewedPriceTitle: "Post-review final price",
+      reviewedPriceHint: "After reviewing the order's real requirements, enter the actual final price here — it becomes the order's new base amount; an approved referral/promo discount will apply to it.",
+      reviewedPriceLabel: "Post-review final price:",
     },
     referrals: {
       title: "Referral & Promo Approvals",

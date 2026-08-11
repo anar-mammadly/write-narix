@@ -59,6 +59,15 @@ export async function recordPaymentAction(orderId: string, amount: number, metho
   return { ok: true };
 }
 
+export async function setReviewedPriceAction(orderId: string, amount: number, orderNumber: string) {
+  const supabase = await createServerSupabaseClient();
+  const { error } = await supabase.rpc("set_order_reviewed_price", { p_order_id: orderId, p_amount: amount });
+  if (error) return { ok: false, error: "Could not save the reviewed price." };
+  revalidatePath(`/admin/orders/${orderNumber}`);
+  revalidatePath(`/dashboard/orders/${orderNumber}`);
+  return { ok: true };
+}
+
 export async function createOrderRequestAction(orderId: string, title: string, description: string, orderNumber: string) {
   const supabase = await createServerSupabaseClient();
   const { data: userData } = await supabase.auth.getUser();

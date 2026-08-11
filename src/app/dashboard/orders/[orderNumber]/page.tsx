@@ -16,7 +16,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
   const { data: order } = await supabase
     .from("orders")
     .select(
-      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, paid_amount, remaining_amount, is_fully_paid, created_at, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label)"
+      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, reviewed_price, paid_amount, remaining_amount, is_fully_paid, created_at, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label)"
     )
     .eq("order_number", orderNumber)
     .single();
@@ -66,6 +66,11 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ or
         <div><p className="text-muted-foreground">{t.remaining}</p><p className="mt-1 font-medium">{Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</p></div>
       </div>
 
+      {order.reviewed_price != null && (
+        <p className="mt-3 text-sm text-success">
+          {t.reviewedPriceLabel} {Number(order.reviewed_price).toFixed(2)} {dict.common.currency}
+        </p>
+      )}
       {order.discount_source && Number(order.discount_amount) > 0 && (
         <p className="mt-3 text-sm text-success">
           {dict.discountSources[order.discount_source]} {Number(order.discount_percentage)}% (-{Number(order.discount_amount).toFixed(2)} {dict.common.currency})

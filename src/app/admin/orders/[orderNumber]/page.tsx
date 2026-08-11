@@ -15,6 +15,7 @@ import {
   PaymentRequestForm,
   RecordPaymentForm,
   OrderRequestForm,
+  ReviewedPriceForm,
 } from "@/components/admin/order-actions";
 
 export default async function AdminOrderWorkspacePage({ params }: { params: Promise<{ orderNumber: string }> }) {
@@ -26,7 +27,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
   const { data: order } = await supabase
     .from("orders")
     .select(
-      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, paid_amount, remaining_amount, locked, status_id, guest_name, guest_email, created_at, word_count, page_count, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label), languages(name), citation_styles(name), profiles!orders_user_id_fkey(full_name)"
+      "id, order_number, subject, topic, description, university, college, base_price, discount_source, discount_percentage, discount_amount, final_price, reviewed_price, paid_amount, remaining_amount, locked, status_id, guest_name, guest_email, created_at, word_count, page_count, order_statuses(name, color), services(name), academic_levels(name), deadline_options(label), languages(name), citation_styles(name), profiles!orders_user_id_fkey(full_name)"
     )
     .eq("order_number", orderNumber)
     .single();
@@ -45,6 +46,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
     { data: promoRequest },
     { data: selectedAddons },
     { data: allAddons },
+    { data: contact },
   ] = await Promise.all([
     supabase.from("order_statuses").select("id, name").eq("is_active", true).order("display_order"),
     supabase
@@ -71,6 +73,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
       .maybeSingle(),
     supabase.from("order_additional_services").select("additional_service_id").eq("order_id", order.id),
     supabase.from("additional_services").select("id, name, is_plagiarism_addon").eq("is_active", true).order("name"),
+    supabase.rpc("get_order_contact", { p_order_id: order.id }),
   ]);
 
   const status = Array.isArray(order.order_statuses) ? order.order_statuses[0] : order.order_statuses;
@@ -89,6 +92,8 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
 
   const promoCode = promoRequest ? (Array.isArray(promoRequest.promo_codes) ? promoRequest.promo_codes[0] : promoRequest.promo_codes) : null;
   const promoProfile = promoRequest ? (Array.isArray(promoRequest.profiles) ? promoRequest.profiles[0] : promoRequest.profiles) : null;
+
+  const contactInfo = contact as { phone: string | null; email: string | null } | null;
 
   const timeline = (history ?? []).map((h) => {
     const s = Array.isArray(h.order_statuses) ? h.order_statuses[0] : h.order_statuses;
@@ -111,6 +116,30 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
         <div><p className="text-muted-foreground">{t.total}</p><p className="mt-1 font-medium">{Number(order.final_price).toFixed(2)} {dict.common.currency}</p></div>
         <div><p className="text-muted-foreground">{t.paid}</p><p className="mt-1 font-medium">{Number(order.paid_amount).toFixed(2)} {dict.common.currency}</p></div>
         <div><p className="text-muted-foreground">{t.remaining}</p><p className="mt-1 font-medium">{Number(order.remaining_amount).toFixed(2)} {dict.common.currency}</p></div>
+      </div>
+
+      {order.reviewed_price != null && (
+        <p className="mt-3 text-sm text-success">
+          {t.reviewedPriceLabel} {Number(order.reviewed_price).toFixed(2)} {dict.common.currency}
+        </p>
+      )}
+
+      <div className="mt-4 rounded-xl border border-border bg-card p-4">
+        <p className="text-sm font-medium text-foreground">{t.contactTitle}</p>
+        <div className="mt-2 grid grid-cols-1 gap-3 text-sm sm:grid-cols-3">
+          <div>
+            <p className="text-muted-foreground">{dict.admin.orders.client}</p>
+            <p>{client?.full_name ?? order.guest_name ?? "—"}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">{t.email}</p>
+            <p>{contactInfo?.email ?? "—"}</p>
+          </div>
+          <div>
+            <p className="text-muted-foreground">{t.phone}</p>
+            <p>{contactInfo?.phone ?? "—"}</p>
+          </div>
+        </div>
       </div>
 
       <Tabs defaultValue="overview" className="mt-8">
@@ -203,6 +232,7 @@ export default async function AdminOrderWorkspacePage({ params }: { params: Prom
             </div>
           )}
 
+          <ReviewedPriceForm orderId={order.id} orderNumber={order.order_number} currentReviewedPrice={order.reviewed_price} dict={dict} />
           <StatusChangeForm orderId={order.id} orderNumber={order.order_number} currentStatusId={order.status_id} locked={order.locked} statuses={statuses ?? []} dict={dict} />
           <OrderRequestForm orderId={order.id} orderNumber={order.order_number} dict={dict} />
         </TabsContent>

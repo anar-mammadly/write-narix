@@ -260,6 +260,7 @@ const az = {
       noPaymentRequests: "Ödəniş tələbi yoxdur.",
       paymentHistory: "Ödəniş tarixçəsi",
       noPayments: "Hələ ödəniş qeydə alınmayıb.",
+      reviewedPriceLabel: "Təhlildən sonrakı yekun qiymət:",
     },
     referral: {
       title: "Dostunu dəvət et",
@@ -366,6 +367,12 @@ const az = {
       selected: "Seçilib",
       notSelected: "Seçilməyib",
       discountRequestsTitle: "Referral / Promo kod",
+      contactTitle: "Əlaqə məlumatları",
+      email: "Email",
+      phone: "Telefon",
+      reviewedPriceTitle: "Təhlildən sonrakı yekun qiymət",
+      reviewedPriceHint: "Sifarişi təhlil etdikdən sonra əsl yekun qiyməti bura daxil edin — bu, sifarişin yeni əsas məbləği olacaq, referral/promo endirimi təsdiqlənərsə bu məbləğə tətbiq olunacaq.",
+      reviewedPriceLabel: "Təhlildən sonrakı yekun qiymət:",
     },
     referrals: {
       title: "Referral və Promo Təsdiqləri",

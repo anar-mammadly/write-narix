@@ -7,6 +7,7 @@ import {
   recordPaymentAction,
   createOrderRequestAction,
   unlockOrderAction,
+  setReviewedPriceAction,
 } from "@/lib/actions/admin-orders";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
 import { Button } from "@/components/ui/button";
@@ -88,6 +89,62 @@ export function StatusChangeForm({
           </Button>
         </>
       )}
+    </div>
+  );
+}
+
+export function ReviewedPriceForm({
+  orderId,
+  orderNumber,
+  currentReviewedPrice,
+  dict,
+}: {
+  orderId: string;
+  orderNumber: string;
+  currentReviewedPrice: number | null;
+  dict: Dictionary;
+}) {
+  const t = dict.admin.workspace;
+  const [amount, setAmount] = useState(currentReviewedPrice != null ? String(currentReviewedPrice) : "");
+  const [pending, startTransition] = useTransition();
+  const [saved, setSaved] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  return (
+    <div className="grid gap-2 rounded-lg border border-border p-4">
+      <p className="text-sm font-medium text-foreground">{t.reviewedPriceTitle}</p>
+      <p className="text-xs text-muted-foreground">{t.reviewedPriceHint}</p>
+      <div className="flex flex-wrap items-center gap-2">
+        <Input
+          type="number"
+          min="0"
+          step="0.01"
+          placeholder={t.amount}
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          className="w-32"
+        />
+        <span className="text-sm text-muted-foreground">{dict.common.currency}</span>
+        <Button
+          size="sm"
+          disabled={pending || !amount || Number(amount) <= 0}
+          onClick={() =>
+            startTransition(async () => {
+              const result = await setReviewedPriceAction(orderId, Number(amount), orderNumber);
+              if (!result.ok) setError(result.error ?? "Failed");
+              else {
+                setSaved(true);
+                setError(null);
+                setTimeout(() => setSaved(false), 1500);
+              }
+            })
+          }
+        >
+          {pending ? t.saving : dict.common.save}
+        </Button>
+        {saved && <span className="text-sm text-success">{dict.common.saved}</span>}
+      </div>
+      {error && <p className="text-sm text-destructive">{error}</p>}
     </div>
   );
 }

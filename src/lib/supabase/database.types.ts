@@ -255,6 +255,7 @@ export interface Database {
           discount_percentage: number;
           discount_amount: number;
           final_price: number;
+          reviewed_price: number | null;
           paid_amount: number;
           remaining_amount: number;
           is_fully_paid: boolean;
@@ -601,6 +602,8 @@ export interface Database {
       reject_promo_request: { Args: { p_request_id: string; p_reason: string | null }; Returns: Json };
       change_order_status: { Args: { p_order_id: string; p_new_status_id: string; p_note: string | null }; Returns: Json };
       unlock_order: { Args: { p_order_id: string }; Returns: void };
+      get_order_contact: { Args: { p_order_id: string }; Returns: Json };
+      set_order_reviewed_price: { Args: { p_order_id: string; p_amount: number }; Returns: Json };
     };
   };
 }
