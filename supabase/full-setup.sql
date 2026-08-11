@@ -4484,7 +4484,7 @@ begin
     reviewed_price = p_amount,
     final_price = p_amount,
     discount_source = null,
-    discount_percentage = null,
+    discount_percentage = 0,
     discount_amount = 0
   where id = p_order_id;
 
