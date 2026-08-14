@@ -5,8 +5,9 @@ import type { Json } from "@/lib/supabase/database.types";
 
 export default async function AdminSettingsPage() {
   const supabase = await createServerSupabaseClient();
-  const [{ data }, dict] = await Promise.all([
+  const [{ data }, { data: services }, dict] = await Promise.all([
     supabase.from("site_settings").select("key, value"),
+    supabase.from("services").select("id, name").eq("is_active", true).order("display_order"),
     getDictionary(),
   ]);
   const map = new Map<string, Json>((data ?? []).map((r) => [r.key, r.value]));
@@ -15,7 +16,7 @@ export default async function AdminSettingsPage() {
   const banner = (map.get("early_order_banner") as { enabled?: boolean; text?: string; text_en?: string } | undefined) ?? {};
   const specialPriceBanner =
     (map.get("special_price_banner") as
-      | { enabled?: boolean; text?: string; text_en?: string; amount?: number }
+      | { enabled?: boolean; text?: string; text_en?: string; amount?: number; service_ids?: string[] }
       | undefined) ?? {};
   const referral = (map.get("referral_program") as { validity_days?: number } | undefined) ?? {};
   const promoPopup =
@@ -50,6 +51,8 @@ export default async function AdminSettingsPage() {
           text={specialPriceBanner.text ?? ""}
           textEn={specialPriceBanner.text_en ?? ""}
           amount={specialPriceBanner.amount ?? 0}
+          serviceIds={specialPriceBanner.service_ids ?? []}
+          services={services ?? []}
           dict={dict}
         />
         <PromoPopupForm

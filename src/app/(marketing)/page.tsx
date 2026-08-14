@@ -60,7 +60,11 @@ export default async function HomePage() {
           dict={dict}
           specialPriceBanner={
             settings.specialPriceBannerEnabled
-              ? { text: settings.specialPriceBannerText, amount: settings.specialPriceBannerAmount }
+              ? {
+                  text: settings.specialPriceBannerText,
+                  amount: settings.specialPriceBannerAmount,
+                  serviceIds: settings.specialPriceBannerServiceIds,
+                }
               : null
           }
         />

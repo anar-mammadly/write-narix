@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export function WhatsAppSettingsForm({ number, display, dict }: { number: string; display: string; dict: Dictionary }) {
   const t = dict.admin.settings;
@@ -109,12 +110,16 @@ export function SpecialPriceBannerForm({
   text,
   textEn,
   amount,
+  serviceIds,
+  services,
   dict,
 }: {
   enabled: boolean;
   text: string;
   textEn: string;
   amount: number;
+  serviceIds: string[];
+  services: { id: string; name: string }[];
   dict: Dictionary;
 }) {
   const t = dict.admin.settings;
@@ -122,6 +127,7 @@ export function SpecialPriceBannerForm({
   const [bannerText, setBannerText] = useState(text);
   const [bannerTextEn, setBannerTextEn] = useState(textEn);
   const [bannerAmount, setBannerAmount] = useState(String(amount || ""));
+  const [selectedServiceIds, setSelectedServiceIds] = useState<string[]>(serviceIds);
   const [pending, startTransition] = useTransition();
   const [saved, setSaved] = useState(false);
 
@@ -131,6 +137,7 @@ export function SpecialPriceBannerForm({
       text: bannerText,
       text_en: bannerTextEn,
       amount: Number(bannerAmount) || 0,
+      service_ids: selectedServiceIds,
     };
   }
 
@@ -139,6 +146,10 @@ export function SpecialPriceBannerForm({
       const result = await updateSiteSettingAction("special_price_banner", payload());
       if (result.ok) { setSaved(true); setTimeout(() => setSaved(false), 1200); }
     });
+  }
+
+  function toggleService(id: string) {
+    setSelectedServiceIds((prev) => (prev.includes(id) ? prev.filter((s) => s !== id) : [...prev, id]));
   }
 
   return (
@@ -166,6 +177,20 @@ export function SpecialPriceBannerForm({
       <div className="grid gap-1.5 max-w-[160px]">
         <Label>{t.specialPriceBannerAmount}</Label>
         <Input type="number" min="0" step="0.01" value={bannerAmount} onChange={(e) => setBannerAmount(e.target.value)} />
+      </div>
+      <div className="grid gap-1.5">
+        <Label>{t.specialPriceBannerServices}</Label>
+        <div className="grid gap-1.5 sm:grid-cols-2">
+          {services.map((s) => (
+            <label key={s.id} className="flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm cursor-pointer hover:bg-muted/50">
+              <Checkbox checked={selectedServiceIds.includes(s.id)} onCheckedChange={() => toggleService(s.id)} />
+              {s.name}
+            </label>
+          ))}
+        </div>
+        {selectedServiceIds.length === 0 && (
+          <p className="text-xs text-muted-foreground">{t.specialPriceBannerNoServiceHint}</p>
+        )}
       </div>
       {saved && <p className="text-xs text-success">{dict.common.saved}</p>}
       <Button size="sm" className="w-fit" disabled={pending} onClick={save}>{dict.common.save}</Button>

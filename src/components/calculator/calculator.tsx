@@ -73,7 +73,7 @@ export function Calculator({
   config: CalculatorConfig;
   isAuthenticated: boolean;
   dict: Dictionary;
-  specialPriceBanner?: { text: string; amount: number } | null;
+  specialPriceBanner?: { text: string; amount: number; serviceIds: string[] } | null;
 }) {
   const router = useRouter();
   const [step, setStep] = useState<"configure" | "details">("configure");
@@ -334,7 +334,7 @@ export function Calculator({
             dict={dict}
             onContinue={handleContinueClick}
             canContinue={pageCountValid}
-            specialPriceBanner={specialPriceBanner}
+            specialPriceBanner={specialPriceBanner?.serviceIds.includes(serviceId) ? specialPriceBanner : null}
           />
         </div>
       ) : (
@@ -399,7 +399,7 @@ function PricePanel({
   dict: Dictionary;
   onContinue: () => void;
   canContinue: boolean;
-  specialPriceBanner?: { text: string; amount: number } | null;
+  specialPriceBanner?: { text: string; amount: number; serviceIds: string[] } | null;
 }) {
   return (
     <div className="lg:sticky lg:top-24 rounded-xl border border-border bg-muted/40 p-6 h-fit">
@@ -422,13 +422,17 @@ function PricePanel({
         {isPending && <Loader2 className="ml-2 size-4 animate-spin text-muted-foreground" />}
       </div>
 
-      {specialPriceBanner && (
+      {specialPriceBanner && preview && preview.final_price > specialPriceBanner.amount && (
         <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
           <Sparkles className="size-3.5" />
-          {formatMessage(dict.calculator.specialPriceBanner, {
-            text: specialPriceBanner.text,
-            amount: specialPriceBanner.amount,
-          })}
+          {specialPriceBanner.text
+            ? formatMessage(dict.calculator.specialPriceBanner, {
+                text: specialPriceBanner.text,
+                amount: specialPriceBanner.amount,
+              })
+            : formatMessage(dict.calculator.specialPriceBannerAmountOnly, {
+                amount: specialPriceBanner.amount,
+              })}
         </div>
       )}
 

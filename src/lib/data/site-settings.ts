@@ -13,7 +13,7 @@ export async function getSiteSettings(locale: Locale = "az") {
     (map.get("early_order_banner") as { enabled?: boolean; text?: string; text_en?: string } | undefined) ?? {};
   const specialPriceBanner =
     (map.get("special_price_banner") as
-      | { enabled?: boolean; text?: string; text_en?: string; amount?: number }
+      | { enabled?: boolean; text?: string; text_en?: string; amount?: number; service_ids?: string[] }
       | undefined) ?? {};
   const company = (map.get("company") as { name?: string; support_email?: string } | undefined) ?? {};
   const currency = (map.get("currency") as { code?: string } | undefined) ?? {};
@@ -24,10 +24,14 @@ export async function getSiteSettings(locale: Locale = "az") {
     earlyOrderBannerEnabled: earlyOrderBanner.enabled ?? false,
     earlyOrderBannerText:
       (locale === "en" ? earlyOrderBanner.text_en : earlyOrderBanner.text) || earlyOrderBanner.text || "",
-    specialPriceBannerEnabled: (specialPriceBanner.enabled ?? false) && !!specialPriceBanner.amount,
+    specialPriceBannerEnabled:
+      (specialPriceBanner.enabled ?? false) &&
+      !!specialPriceBanner.amount &&
+      (specialPriceBanner.service_ids?.length ?? 0) > 0,
     specialPriceBannerText:
       (locale === "en" ? specialPriceBanner.text_en : specialPriceBanner.text) || specialPriceBanner.text || "",
     specialPriceBannerAmount: specialPriceBanner.amount ?? 0,
+    specialPriceBannerServiceIds: specialPriceBanner.service_ids ?? [],
     companyName: company.name ?? "Narix Academy",
     supportEmail: company.support_email ?? "support@narix.az",
     currencyCode: currency.code ?? "AZN",
