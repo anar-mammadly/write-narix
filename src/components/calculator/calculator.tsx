@@ -68,10 +68,12 @@ export function Calculator({
   config,
   isAuthenticated,
   dict,
+  specialPriceBanner,
 }: {
   config: CalculatorConfig;
   isAuthenticated: boolean;
   dict: Dictionary;
+  specialPriceBanner?: { text: string; amount: number } | null;
 }) {
   const router = useRouter();
   const [step, setStep] = useState<"configure" | "details">("configure");
@@ -332,6 +334,7 @@ export function Calculator({
             dict={dict}
             onContinue={handleContinueClick}
             canContinue={pageCountValid}
+            specialPriceBanner={specialPriceBanner}
           />
         </div>
       ) : (
@@ -387,6 +390,7 @@ function PricePanel({
   dict,
   onContinue,
   canContinue,
+  specialPriceBanner,
 }: {
   preview: PricePreview | null;
   error: string | null;
@@ -395,6 +399,7 @@ function PricePanel({
   dict: Dictionary;
   onContinue: () => void;
   canContinue: boolean;
+  specialPriceBanner?: { text: string; amount: number } | null;
 }) {
   return (
     <div className="lg:sticky lg:top-24 rounded-xl border border-border bg-muted/40 p-6 h-fit">
@@ -416,6 +421,16 @@ function PricePanel({
         )}
         {isPending && <Loader2 className="ml-2 size-4 animate-spin text-muted-foreground" />}
       </div>
+
+      {specialPriceBanner && (
+        <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+          <Sparkles className="size-3.5" />
+          {formatMessage(dict.calculator.specialPriceBanner, {
+            text: specialPriceBanner.text,
+            amount: specialPriceBanner.amount,
+          })}
+        </div>
+      )}
 
       {preview && preview.applied && (
         <div className="mt-3 flex items-center gap-1.5 text-sm text-success">

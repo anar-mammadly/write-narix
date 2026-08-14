@@ -104,6 +104,75 @@ export function EarlyOrderBannerForm({
   );
 }
 
+export function SpecialPriceBannerForm({
+  enabled,
+  text,
+  textEn,
+  amount,
+  dict,
+}: {
+  enabled: boolean;
+  text: string;
+  textEn: string;
+  amount: number;
+  dict: Dictionary;
+}) {
+  const t = dict.admin.settings;
+  const [isEnabled, setIsEnabled] = useState(enabled);
+  const [bannerText, setBannerText] = useState(text);
+  const [bannerTextEn, setBannerTextEn] = useState(textEn);
+  const [bannerAmount, setBannerAmount] = useState(String(amount || ""));
+  const [pending, startTransition] = useTransition();
+  const [saved, setSaved] = useState(false);
+
+  function payload(overrides: Partial<{ enabled: boolean }> = {}) {
+    return {
+      enabled: overrides.enabled ?? isEnabled,
+      text: bannerText,
+      text_en: bannerTextEn,
+      amount: Number(bannerAmount) || 0,
+    };
+  }
+
+  function save() {
+    startTransition(async () => {
+      const result = await updateSiteSettingAction("special_price_banner", payload());
+      if (result.ok) { setSaved(true); setTimeout(() => setSaved(false), 1200); }
+    });
+  }
+
+  return (
+    <div className="grid gap-3 rounded-xl border border-border bg-card p-5">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium text-foreground">{t.specialPriceBannerTitle}</p>
+        <Switch
+          checked={isEnabled}
+          onCheckedChange={(v) => {
+            setIsEnabled(v);
+            startTransition(() => { updateSiteSettingAction("special_price_banner", payload({ enabled: v })); });
+          }}
+        />
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="grid gap-1.5">
+          <Label>{t.specialPriceBannerTextAz}</Label>
+          <Input value={bannerText} onChange={(e) => setBannerText(e.target.value)} placeholder={t.specialPriceBannerPlaceholder} />
+        </div>
+        <div className="grid gap-1.5">
+          <Label>{t.specialPriceBannerTextEn}</Label>
+          <Input value={bannerTextEn} onChange={(e) => setBannerTextEn(e.target.value)} placeholder={t.specialPriceBannerPlaceholderEn} />
+        </div>
+      </div>
+      <div className="grid gap-1.5 max-w-[160px]">
+        <Label>{t.specialPriceBannerAmount}</Label>
+        <Input type="number" min="0" step="0.01" value={bannerAmount} onChange={(e) => setBannerAmount(e.target.value)} />
+      </div>
+      {saved && <p className="text-xs text-success">{dict.common.saved}</p>}
+      <Button size="sm" className="w-fit" disabled={pending} onClick={save}>{dict.common.save}</Button>
+    </div>
+  );
+}
+
 export function PromoPopupForm({
   enabled,
   title,

@@ -11,6 +11,10 @@ export async function getSiteSettings(locale: Locale = "az") {
   const whatsapp = (map.get("whatsapp") as { number?: string; display?: string } | undefined) ?? {};
   const earlyOrderBanner =
     (map.get("early_order_banner") as { enabled?: boolean; text?: string; text_en?: string } | undefined) ?? {};
+  const specialPriceBanner =
+    (map.get("special_price_banner") as
+      | { enabled?: boolean; text?: string; text_en?: string; amount?: number }
+      | undefined) ?? {};
   const company = (map.get("company") as { name?: string; support_email?: string } | undefined) ?? {};
   const currency = (map.get("currency") as { code?: string } | undefined) ?? {};
 
@@ -20,6 +24,10 @@ export async function getSiteSettings(locale: Locale = "az") {
     earlyOrderBannerEnabled: earlyOrderBanner.enabled ?? false,
     earlyOrderBannerText:
       (locale === "en" ? earlyOrderBanner.text_en : earlyOrderBanner.text) || earlyOrderBanner.text || "",
+    specialPriceBannerEnabled: (specialPriceBanner.enabled ?? false) && !!specialPriceBanner.amount,
+    specialPriceBannerText:
+      (locale === "en" ? specialPriceBanner.text_en : specialPriceBanner.text) || specialPriceBanner.text || "",
+    specialPriceBannerAmount: specialPriceBanner.amount ?? 0,
     companyName: company.name ?? "Narix Academy",
     supportEmail: company.support_email ?? "support@narix.az",
     currencyCode: currency.code ?? "AZN",

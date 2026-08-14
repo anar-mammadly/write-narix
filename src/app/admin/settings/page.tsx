@@ -1,6 +1,6 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
-import { WhatsAppSettingsForm, EarlyOrderBannerForm, ReferralValidityForm, PromoPopupForm } from "@/components/admin/settings-form";
+import { WhatsAppSettingsForm, EarlyOrderBannerForm, SpecialPriceBannerForm, ReferralValidityForm, PromoPopupForm } from "@/components/admin/settings-form";
 import type { Json } from "@/lib/supabase/database.types";
 
 export default async function AdminSettingsPage() {
@@ -13,6 +13,10 @@ export default async function AdminSettingsPage() {
 
   const whatsapp = (map.get("whatsapp") as { number?: string; display?: string } | undefined) ?? {};
   const banner = (map.get("early_order_banner") as { enabled?: boolean; text?: string; text_en?: string } | undefined) ?? {};
+  const specialPriceBanner =
+    (map.get("special_price_banner") as
+      | { enabled?: boolean; text?: string; text_en?: string; amount?: number }
+      | undefined) ?? {};
   const referral = (map.get("referral_program") as { validity_days?: number } | undefined) ?? {};
   const promoPopup =
     (map.get("promo_popup") as
@@ -39,6 +43,13 @@ export default async function AdminSettingsPage() {
           enabled={banner.enabled ?? false}
           text={banner.text ?? ""}
           textEn={banner.text_en ?? ""}
+          dict={dict}
+        />
+        <SpecialPriceBannerForm
+          enabled={specialPriceBanner.enabled ?? false}
+          text={specialPriceBanner.text ?? ""}
+          textEn={specialPriceBanner.text_en ?? ""}
+          amount={specialPriceBanner.amount ?? 0}
           dict={dict}
         />
         <PromoPopupForm

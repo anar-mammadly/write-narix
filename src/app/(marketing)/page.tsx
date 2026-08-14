@@ -54,7 +54,16 @@ export default async function HomePage() {
       </section>
 
       <section id="calculator" className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
-        <Calculator config={config} isAuthenticated={!!userData.user} dict={dict} />
+        <Calculator
+          config={config}
+          isAuthenticated={!!userData.user}
+          dict={dict}
+          specialPriceBanner={
+            settings.specialPriceBannerEnabled
+              ? { text: settings.specialPriceBannerText, amount: settings.specialPriceBannerAmount }
+              : null
+          }
+        />
         <p className="mt-4 flex items-start gap-2 rounded-lg border border-border bg-muted/40 px-4 py-3 text-xs text-muted-foreground">
           <Info className="mt-0.5 size-3.5 shrink-0" />
           {dict.calculator.priceDisclaimer}
