@@ -10,6 +10,7 @@ import { TestimonialsSection } from "@/components/marketing/testimonials-section
 import { HowItWorks } from "@/components/marketing/how-it-works";
 import { PromoPopup } from "@/components/marketing/promo-popup";
 import { LoginSuccessToast } from "@/components/marketing/login-success-toast";
+import { OneClickOrderButton } from "@/components/marketing/one-click-order-button";
 
 export default async function HomePage() {
   const supabase = await createServerSupabaseClient();
@@ -54,6 +55,9 @@ export default async function HomePage() {
       </section>
 
       <section id="calculator" className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
+        <div className="mb-6 flex justify-center">
+          <OneClickOrderButton services={config.services} isAuthenticated={!!userData.user} dict={dict} />
+        </div>
         <Calculator
           config={config}
           isAuthenticated={!!userData.user}

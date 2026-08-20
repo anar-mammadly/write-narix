@@ -9,6 +9,7 @@ import {
   LogOut,
   BookOpen,
   Menu,
+  Zap,
 } from "lucide-react";
 import { signOutAction } from "@/lib/actions/auth";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
@@ -27,6 +28,7 @@ export function AdminShell({
   const nav = [
     { href: "/admin", label: dict.admin.nav.dashboard, icon: LayoutDashboard },
     { href: "/admin/orders", label: dict.admin.nav.orders, icon: ListOrdered },
+    { href: "/admin/one-click-orders", label: dict.admin.nav.oneClickOrders, icon: Zap },
     { href: "/admin/referrals", label: dict.admin.nav.referrals, icon: Gift },
     { href: "/admin/statuses", label: dict.admin.nav.statuses, icon: ListChecks },
     { href: "/admin/services", label: dict.admin.nav.services, icon: BookOpen },

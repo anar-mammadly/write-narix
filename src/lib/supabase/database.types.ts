@@ -30,6 +30,7 @@ export type FileCategory =
   | "revision";
 export type RequestStatus = "pending" | "fulfilled" | "cancelled";
 export type PaymentRequestStatus = "pending" | "paid" | "cancelled";
+export type OneClickOrderStatus = "new" | "contacted" | "converted" | "cancelled";
 
 interface Table<Row, Insert, Update = Partial<Insert>> {
   Row: Row;
@@ -101,6 +102,26 @@ export interface Database {
           updated_at: string;
         },
         { category_id?: string | null; name: string; slug: string; description?: string | null; display_order?: number; is_active?: boolean }
+      >;
+      one_click_orders: Table<
+        {
+          id: string;
+          service_id: string;
+          user_id: string | null;
+          topic: string;
+          phone: string | null;
+          email: string | null;
+          status: OneClickOrderStatus;
+          created_at: string;
+        },
+        {
+          service_id: string;
+          user_id?: string | null;
+          topic: string;
+          phone?: string | null;
+          email?: string | null;
+          status?: OneClickOrderStatus;
+        }
       >;
       academic_levels: Table<
         { id: string; name: string; slug: string; display_order: number; is_active: boolean; translations: Json; created_at: string; updated_at: string },
@@ -594,6 +615,7 @@ export interface Database {
       };
       validate_promo_code: { Args: { p_code: string }; Returns: Json };
       create_order: { Args: { p_payload: Json }; Returns: Json };
+      create_one_click_order: { Args: { p_payload: Json }; Returns: Json };
       get_order_by_token: { Args: { p_token: string }; Returns: Json };
       claim_guest_order: { Args: { p_order_number: string; p_token: string }; Returns: Json };
       approve_referral: { Args: { p_referral_id: string }; Returns: Json };
