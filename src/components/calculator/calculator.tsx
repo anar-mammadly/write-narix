@@ -342,6 +342,7 @@ export function Calculator({
           isAuthenticated={isAuthenticated}
           preview={displayPreview}
           dict={dict}
+          specialPriceBanner={specialPriceBanner?.serviceIds.includes(serviceId) ? specialPriceBanner : null}
           selection={{
             serviceId,
             academicLevelId,
@@ -495,6 +496,7 @@ function OrderDetailsStep({
   preview,
   selection,
   dict,
+  specialPriceBanner,
   onBack,
   onSuccess,
 }: {
@@ -502,6 +504,7 @@ function OrderDetailsStep({
   preview: PricePreview | null;
   selection: Parameters<typeof previewPriceAction>[0];
   dict: Dictionary;
+  specialPriceBanner?: { text: string; amount: number; serviceIds: string[] } | null;
   onBack: () => void;
   onSuccess: (orderNumber: string, token: string | null, referralStatus: string | null, promoStatus: string | null) => void;
 }) {
@@ -624,6 +627,20 @@ function OrderDetailsStep({
 
       <div className="rounded-xl border border-border bg-muted/40 p-6 h-fit text-sm">
         <p className="font-medium text-foreground">{dict.calculator.orderSummary}</p>
+
+        {specialPriceBanner && preview && preview.final_price > specialPriceBanner.amount && (
+          <div className="mt-2 inline-flex items-center gap-1.5 rounded-full border border-primary bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            <Sparkles className="size-3.5" />
+            {specialPriceBanner.text
+              ? formatMessage(dict.calculator.specialPriceBanner, {
+                  text: specialPriceBanner.text,
+                  amount: specialPriceBanner.amount,
+                })
+              : formatMessage(dict.calculator.specialPriceBannerAmountOnly, {
+                  amount: specialPriceBanner.amount,
+                })}
+          </div>
+        )}
 
         <div className="mt-3 flex items-center justify-between">
           <span className="text-muted-foreground">{dict.calculator.service}</span>
