@@ -64,7 +64,6 @@ export default async function HomePage({
         <div className="mb-6 flex justify-center">
           <OneClickOrderButton
             services={config.services}
-            isAuthenticated={!!userData.user}
             dict={dict}
             autoOpen={autoOpenOneClickOrder}
           />

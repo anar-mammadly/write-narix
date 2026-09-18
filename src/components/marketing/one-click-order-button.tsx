@@ -28,12 +28,10 @@ type Service = { id: string; name: string };
 
 export function OneClickOrderButton({
   services,
-  isAuthenticated,
   dict,
   autoOpen = false,
 }: {
   services: Service[];
-  isAuthenticated: boolean;
   dict: Dictionary;
   autoOpen?: boolean;
 }) {
@@ -83,8 +81,8 @@ export function OneClickOrderButton({
       const result = await createOneClickOrderAction({
         serviceId,
         topic,
-        phone: isAuthenticated ? undefined : phone,
-        email: isAuthenticated ? undefined : email,
+        phone,
+        email,
       });
       if (!result.ok) {
         setError(errorMessages[result.error] ?? t.errorGeneric);
@@ -151,32 +149,28 @@ export function OneClickOrderButton({
                   />
                 </div>
 
-                {!isAuthenticated && (
-                  <>
-                    <div className="grid gap-2.5">
-                      <Label htmlFor="oneClickPhone">{t.phone}</Label>
-                      <Input
-                        id="oneClickPhone"
-                        type="tel"
-                        value={phone}
-                        onChange={(e) => setPhone(e.target.value)}
-                        placeholder={t.phonePlaceholder}
-                        required
-                      />
-                    </div>
-                    <div className="grid gap-2.5">
-                      <Label htmlFor="oneClickEmail">{t.email}</Label>
-                      <Input
-                        id="oneClickEmail"
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder={t.emailPlaceholder}
-                        required
-                      />
-                    </div>
-                  </>
-                )}
+                <div className="grid gap-2.5">
+                  <Label htmlFor="oneClickPhone">{t.phone}</Label>
+                  <Input
+                    id="oneClickPhone"
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder={t.phonePlaceholder}
+                    required
+                  />
+                </div>
+                <div className="grid gap-2.5">
+                  <Label htmlFor="oneClickEmail">{t.email}</Label>
+                  <Input
+                    id="oneClickEmail"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t.emailPlaceholder}
+                    required
+                  />
+                </div>
 
                 {error && <p className="text-sm text-destructive">{error}</p>}
               </div>

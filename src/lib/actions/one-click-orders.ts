@@ -14,10 +14,9 @@ export type CreateOneClickOrderInput = {
 
 export type CreateOneClickOrderResult = { ok: true; id: string } | { ok: false; error: string };
 
-// Separate lead-capture flow from the full checkout: create_one_click_order()
-// (SECURITY DEFINER, Postgres) pulls phone/email from the caller's own
-// profile/auth account when signed in, so a logged-in user only needs to
-// submit topic + service.
+// Separate lead-capture flow from the full checkout: topic + service +
+// phone + email are always required, so admins always have a way to reach
+// the lead, regardless of whether they're signed in.
 export async function createOneClickOrderAction(input: CreateOneClickOrderInput): Promise<CreateOneClickOrderResult> {
   const h = await headers();
   const ip = h.get("x-forwarded-for") ?? "local";
@@ -31,18 +30,14 @@ export async function createOneClickOrderAction(input: CreateOneClickOrderInput)
   if (!input.serviceId) {
     return { ok: false, error: "serviceRequired" };
   }
+  if (!input.phone || input.phone.trim().length === 0) {
+    return { ok: false, error: "phoneRequired" };
+  }
+  if (!input.email || input.email.trim().length === 0) {
+    return { ok: false, error: "emailRequired" };
+  }
 
   const supabase = await createServerSupabaseClient();
-  const { data: userData } = await supabase.auth.getUser();
-
-  if (!userData.user) {
-    if (!input.phone || input.phone.trim().length === 0) {
-      return { ok: false, error: "phoneRequired" };
-    }
-    if (!input.email || input.email.trim().length === 0) {
-      return { ok: false, error: "emailRequired" };
-    }
-  }
 
   const { data, error } = await supabase.rpc("create_one_click_order", {
     p_payload: {
