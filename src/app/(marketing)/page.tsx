@@ -12,16 +12,22 @@ import { PromoPopup } from "@/components/marketing/promo-popup";
 import { LoginSuccessToast } from "@/components/marketing/login-success-toast";
 import { OneClickOrderButton } from "@/components/marketing/one-click-order-button";
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const supabase = await createServerSupabaseClient();
   const { data: userData } = await supabase.auth.getUser();
   const locale = await getLocale();
-  const [config, settings, dict, promoPopup] = await Promise.all([
+  const [config, settings, dict, promoPopup, params] = await Promise.all([
     getCalculatorConfig(locale),
     getSiteSettings(locale),
     getDictionary(),
     getPromoPopup(locale),
+    searchParams,
   ]);
+  const autoOpenOneClickOrder = params.order === "1";
 
   return (
     <>
@@ -56,7 +62,12 @@ export default async function HomePage() {
 
       <section id="calculator" className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
         <div className="mb-6 flex justify-center">
-          <OneClickOrderButton services={config.services} isAuthenticated={!!userData.user} dict={dict} />
+          <OneClickOrderButton
+            services={config.services}
+            isAuthenticated={!!userData.user}
+            dict={dict}
+            autoOpen={autoOpenOneClickOrder}
+          />
         </div>
         <Calculator
           config={config}

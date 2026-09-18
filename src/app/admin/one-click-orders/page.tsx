@@ -1,6 +1,7 @@
 import { createServerSupabaseClient } from "@/lib/supabase/server";
 import { getDictionary } from "@/lib/i18n/get-dictionary";
 import { OneClickOrderStatusSelect } from "@/components/admin/one-click-order-status-select";
+import { OneClickOrderShareLink } from "@/components/admin/one-click-order-share-link";
 import type { OneClickOrderStatus } from "@/lib/actions/one-click-orders";
 
 export default async function AdminOneClickOrdersPage() {
@@ -25,6 +26,8 @@ export default async function AdminOneClickOrdersPage() {
     <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
       <h1 className="font-heading text-2xl font-semibold text-foreground">{t.title}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t.subtitle}</p>
+
+      <OneClickOrderShareLink helpText={t.shareLink} copyLabel={t.copyLink} copiedLabel={t.copied} />
 
       {(rows ?? []).length === 0 && (
         <div className="mt-6 rounded-xl border border-border bg-card px-5 py-8 text-center text-muted-foreground">{t.empty}</div>

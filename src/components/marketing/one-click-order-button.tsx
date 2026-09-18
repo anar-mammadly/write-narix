@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { Zap, CheckCircle2 } from "lucide-react";
 import { createOneClickOrderAction } from "@/lib/actions/one-click-orders";
 import type { Dictionary } from "@/lib/i18n/get-dictionary";
@@ -29,13 +30,16 @@ export function OneClickOrderButton({
   services,
   isAuthenticated,
   dict,
+  autoOpen = false,
 }: {
   services: Service[];
   isAuthenticated: boolean;
   dict: Dictionary;
+  autoOpen?: boolean;
 }) {
   const t = dict.oneClickOrder;
-  const [open, setOpen] = useState(false);
+  const router = useRouter();
+  const [open, setOpen] = useState(autoOpen);
   const [serviceId, setServiceId] = useState("");
   const [topic, setTopic] = useState("");
   const [phone, setPhone] = useState("");
@@ -43,6 +47,12 @@ export function OneClickOrderButton({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [submitting, startSubmit] = useTransition();
+
+  useEffect(() => {
+    if (!autoOpen) return;
+    router.replace("/", { scroll: false });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- strip the shared-link marker once on landing, not on every autoOpen identity change
+  }, []);
 
   const errorMessages: Record<string, string> = {
     topicRequired: t.errorTopicRequired,

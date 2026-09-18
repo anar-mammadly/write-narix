@@ -353,6 +353,9 @@ const az = {
     oneClickOrders: {
       title: "1 Kliklə Sifarişlər",
       subtitle: "Ana səhifədəki 'Bir kliklə sifariş et' düyməsi ilə daxil olan qısa sorğular. Adi sifariş axınından asılı deyil.",
+      shareLink: "Bu linki istənilən adama göndərin — açan kimi 'Bir kliklə sifariş et' formu avtomatik açılacaq.",
+      copyLink: "Linki kopyala",
+      copied: "Kopyalandı!",
       date: "Tarix",
       topic: "Mövzu",
       service: "Xidmət",

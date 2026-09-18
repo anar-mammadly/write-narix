@@ -355,6 +355,9 @@ const en = {
     oneClickOrders: {
       title: "One-Click Orders",
       subtitle: "Quick requests submitted via the 'Order in one click' button on the homepage. Independent of the regular order pipeline.",
+      shareLink: "Send this link to anyone — opening it will automatically open the 'Order in one click' form.",
+      copyLink: "Copy link",
+      copied: "Copied!",
       date: "Date",
       topic: "Topic",
       service: "Service",
